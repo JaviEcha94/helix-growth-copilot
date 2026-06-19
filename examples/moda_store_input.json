@@ -1,0 +1,97 @@
+{
+  "store_name": "Urbana Store",
+  "period": "Mayo 2026",
+  "competitor_domain": "zara.com/ar",
+  "campaigns": [
+    {
+      "name": "Meta — Colección Otoño",
+      "spend_ars": 45000,
+      "revenue_ars": 198000,
+      "clicks": 5800,
+      "impressions": 180000,
+      "conversions": 61
+    },
+    {
+      "name": "Google Shopping — Buzos y Camperas",
+      "spend_ars": 28000,
+      "revenue_ars": 52000,
+      "clicks": 2100,
+      "impressions": 76000,
+      "conversions": 18
+    },
+    {
+      "name": "Meta — Retargeting Compradores Anteriores",
+      "spend_ars": 12000,
+      "revenue_ars": 68000,
+      "clicks": 980,
+      "impressions": 22000,
+      "conversions": 29
+    },
+    {
+      "name": "TikTok Ads — Contenido UGC",
+      "spend_ars": 18000,
+      "revenue_ars": 14000,
+      "clicks": 3200,
+      "impressions": 310000,
+      "conversions": 7
+    }
+  ],
+  "products": [
+    {
+      "sku": "BUZ-001",
+      "name": "Buzo Oversize Frizado",
+      "units_sold": 94,
+      "revenue_ars": 470000,
+      "stock": 8,
+      "price_ars": 5000,
+      "category": "Buzos"
+    },
+    {
+      "sku": "CAM-003",
+      "name": "Campera Puffer Corta",
+      "units_sold": 2,
+      "revenue_ars": 14000,
+      "stock": 72,
+      "price_ars": 7000,
+      "category": "Camperas"
+    },
+    {
+      "sku": "PAN-005",
+      "name": "Pantalón Cargo Wide Leg",
+      "units_sold": 4,
+      "revenue_ars": 20000,
+      "stock": 58,
+      "price_ars": 5000,
+      "category": "Pantalones"
+    },
+    {
+      "sku": "REM-010",
+      "name": "Remera Estampada Streetwear",
+      "units_sold": 47,
+      "revenue_ars": 117500,
+      "stock": 35,
+      "price_ars": 2500,
+      "category": "Remeras"
+    },
+    {
+      "sku": "ACC-020",
+      "name": "Gorra Five Panel",
+      "units_sold": 3,
+      "revenue_ars": 7500,
+      "stock": 90,
+      "price_ars": 2500,
+      "category": "Accesorios"
+    }
+  ],
+  "customer_metrics": {
+    "total_sessions": 32000,
+    "cart_abandonment_rate": 0.68,
+    "repeat_purchase_rate": 0.22,
+    "avg_order_value_ars": 8200,
+    "top_segments": [
+      "Mujeres 18-28 moda urbana",
+      "Compradores de primera vez vía Instagram",
+      "Clientes recurrentes buzos/remeras"
+    ]
+  }
+}

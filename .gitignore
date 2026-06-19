@@ -1,0 +1,18 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+.mypy_cache/
+
+# Reportes generados en runtime (los de examples/ sí se versionan)
+reports/*.md
+outputs/
+
+# Claude Code local config
+.claude/

@@ -1,0 +1,97 @@
+{
+  "store_name": "TechMarket Argentina",
+  "period": "Junio 2026",
+  "competitor_domain": "mercadolibre.com.ar",
+  "campaigns": [
+    {
+      "name": "Google Shopping — Notebooks",
+      "spend_ars": 85000,
+      "revenue_ars": 420000,
+      "clicks": 3200,
+      "impressions": 98000,
+      "conversions": 42
+    },
+    {
+      "name": "Meta — Retargeting Carritos",
+      "spend_ars": 32000,
+      "revenue_ars": 48000,
+      "clicks": 1100,
+      "impressions": 45000,
+      "conversions": 8
+    },
+    {
+      "name": "Google Search — Genérico Tech",
+      "spend_ars": 60000,
+      "revenue_ars": 95000,
+      "clicks": 2800,
+      "impressions": 210000,
+      "conversions": 11
+    },
+    {
+      "name": "Meta — Prospecting Frío",
+      "spend_ars": 25000,
+      "revenue_ars": 18000,
+      "clicks": 650,
+      "impressions": 120000,
+      "conversions": 3
+    }
+  ],
+  "products": [
+    {
+      "sku": "NB-001",
+      "name": "Notebook Lenovo IdeaPad 15",
+      "units_sold": 38,
+      "revenue_ars": 312000,
+      "stock": 12,
+      "price_ars": 820000,
+      "category": "Notebooks"
+    },
+    {
+      "sku": "NB-002",
+      "name": "Notebook HP 14 Core i5",
+      "units_sold": 3,
+      "revenue_ars": 22500,
+      "stock": 65,
+      "price_ars": 750000,
+      "category": "Notebooks"
+    },
+    {
+      "sku": "ACCS-010",
+      "name": "Mouse Inalámbrico Logitech M185",
+      "units_sold": 2,
+      "revenue_ars": 8000,
+      "stock": 80,
+      "price_ars": 4000,
+      "category": "Accesorios"
+    },
+    {
+      "sku": "ACCS-011",
+      "name": "Teclado Mecánico Redragon K552",
+      "units_sold": 15,
+      "revenue_ars": 90000,
+      "stock": 20,
+      "price_ars": 6000,
+      "category": "Accesorios"
+    },
+    {
+      "sku": "MON-003",
+      "name": "Monitor LG 24\" FHD",
+      "units_sold": 4,
+      "revenue_ars": 68000,
+      "stock": 55,
+      "price_ars": 17000,
+      "category": "Monitores"
+    }
+  ],
+  "customer_metrics": {
+    "total_sessions": 18500,
+    "cart_abandonment_rate": 0.72,
+    "repeat_purchase_rate": 0.14,
+    "avg_order_value_ars": 95000,
+    "top_segments": [
+      "Compradores de notebooks primera vez",
+      "Profesionales tech 25-40",
+      "Gamers accesorios"
+    ]
+  }
+}
