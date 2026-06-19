@@ -3,8 +3,6 @@
 Sistema multi-agente con **LangGraph** para análisis de crecimiento de tiendas e-commerce.
 Cruza 4 perspectivas especializadas (Ads, Producto, Cliente, SEO) y genera un reporte ejecutivo priorizado.
 
-Desarrollado como proyecto capstone del Módulo 5 — Academia de IA & Automatización.
-
 ---
 
 ## Arquitectura del grafo
