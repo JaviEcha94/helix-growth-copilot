@@ -16,3 +16,6 @@ outputs/
 
 # Claude Code local config
 .claude/
+
+# Estado local de la UI Streamlit (persistencia sin localStorage)
+.streamlit_state/

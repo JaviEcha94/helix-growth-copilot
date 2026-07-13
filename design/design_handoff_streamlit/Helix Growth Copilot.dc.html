@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;}
+    body{margin:0;background:#07070C;}
+    input::placeholder{color:#5b6472;}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.3}}
+    @keyframes shimmer{0%{background-position:-400px 0}100%{background-position:600px 0}}
+    @keyframes screenIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+    @keyframes fadeSlideIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+    @keyframes toastIn{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
+    @keyframes barGlow{0%,100%{box-shadow:0 0 10px rgba(37,99,235,.45)}50%{box-shadow:0 0 22px rgba(37,99,235,.9)}}
+    @keyframes sheen{0%{background-position:0% 0}100%{background-position:220% 0}}
+    @keyframes ringPulse{0%{transform:scale(.8);opacity:.7}70%{transform:scale(1.5);opacity:0}100%{opacity:0}}
+    @keyframes blobFloat{0%,100%{transform:translate(0,0)}50%{transform:translate(0,30px)}}
+    @keyframes gridDrift{0%{background-position:0 0,0 0}100%{background-position:46px 46px,46px 46px}}
+    @keyframes stripeMove{from{background-position:0 0}to{background-position:28px 0}}
+    @keyframes scanSweep{0%{transform:translateX(-120%)}100%{transform:translateX(460%)}}
+    @keyframes titleGlow{0%,100%{text-shadow:0 0 18px rgba(37,99,235,.45)}50%{text-shadow:0 0 30px rgba(37,99,235,.8)}}
+    @keyframes hairlineSweep{0%,100%{opacity:.5}50%{opacity:1}}
+  </style>
+</helmet>
+<div style="position:relative;min-height:100vh;background:#07070C;color:#fff;font-family:'Inter',system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden;">
+
+  <div style="position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(120,150,220,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(120,150,220,.055) 1px,transparent 1px);background-size:46px 46px;animation:gridDrift 16s linear infinite;-webkit-mask-image:radial-gradient(circle at 50% 20%, #000 0%, transparent 76%);mask-image:radial-gradient(circle at 50% 20%, #000 0%, transparent 76%);"></div>
+  <div style="position:fixed;top:-180px;right:-100px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,.32),transparent 70%);filter:blur(24px);pointer-events:none;z-index:0;animation:blobFloat 11s ease-in-out infinite;"></div>
+  <div style="position:fixed;bottom:-220px;left:-160px;width:540px;height:540px;border-radius:50%;background:radial-gradient(circle,rgba(249,115,22,.22),transparent 70%);filter:blur(24px);pointer-events:none;z-index:0;animation:blobFloat 13s ease-in-out infinite reverse;"></div>
+  <div style="position:fixed;top:220px;left:10%;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(0,212,170,.14),transparent 70%);filter:blur(30px);pointer-events:none;z-index:0;animation:blobFloat 15s ease-in-out infinite;"></div>
+
+  <header style="position:sticky;top:0;z-index:30;backdrop-filter:blur(14px);background:rgba(7,7,12,.72);border-bottom:1px solid rgba(255,255,255,.07);">
+    <div style="max-width:1180px;margin:0 auto;padding:13px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="position:relative;width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#2563EB,#00D4AA 55%,#F97316);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:21px;color:#fff;box-shadow:0 0 26px rgba(37,99,235,.6);">H</div>
+        <div style="display:flex;flex-direction:column;line-height:1.15;">
+          <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;letter-spacing:-.01em;">Helix <span style="color:#94A3B8;font-weight:500;">Growth Copilot</span></div>
+          <sc-if value="{{ showTagline }}" hint-placeholder-val="{{ true }}"><div style="font-size:12px;color:#94A3B8;">{{ t.tagline }}</div></sc-if>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:#94A3B8;"><span style="width:8px;height:8px;border-radius:50%;background:#22C55E;box-shadow:0 0 8px #22C55E;animation:pulseDot 2.2s infinite;"></span><sc-if value="{{ showStatusText }}" hint-placeholder-val="{{ true }}"><span>{{ t.statusOnline }}</span></sc-if></div>
+
+        <div style="position:relative;">
+          <button onClick="{{ toggleHistory }}" aria-label="{{ t.historyBtn }}" style="display:flex;align-items:center;gap:6px;background:rgba(18,20,34,.6);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:7px 12px;color:#94A3B8;font-size:12.5px;cursor:pointer;font-family:inherit;backdrop-filter:blur(8px);" style-hover="border-color:rgba(37,99,235,.4);color:#fff;" style-focus="outline:2px solid #5b8cff;outline-offset:2px;">
+            <span>🕓</span><span>{{ t.historyBtn }}</span>
+            <sc-if value="{{ hasHistory }}"><span style="background:#2563EB;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:99px;">{{ historyCount }}</span></sc-if>
+          </button>
+          <sc-if value="{{ showHistory }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;top:calc(100% + 8px);right:0;width:280px;background:rgba(14,16,28,.97);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.1);border-radius:14px;box-shadow:0 20px 50px rgba(0,0,0,.6), 0 0 30px rgba(37,99,235,.12);z-index:40;padding:12px;animation:screenIn .2s ease both;">
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;margin-bottom:8px;">{{ t.historyTitle }}</div>
+              <sc-if value="{{ hasHistory }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:6px;max-height:260px;overflow:auto;">
+                  <sc-for list="{{ historyList }}" as="h" hint-placeholder-count="2">
+                    <button onClick="{{ h.onClick }}" style="display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;text-align:left;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:9px 11px;color:#fff;font-family:inherit;cursor:pointer;" style-hover="background:rgba(37,99,235,.14);border-color:rgba(37,99,235,.3);">
+                      <span style="display:flex;flex-direction:column;gap:2px;min-width:0;">
+                        <span style="font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ h.storeName }}</span>
+                        <span style="font-size:11px;color:#94A3B8;">{{ h.relative }}</span>
+                      </span>
+                      <span style="{{ h.scoreStyle }}">{{ h.healthScore }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <sc-if value="{{ noHistory }}" hint-placeholder-val="{{ true }}"><div style="font-size:12px;color:#64748b;padding:8px 2px;">{{ t.historyEmpty }}</div></sc-if>
+            </div>
+          </sc-if>
+        </div>
+
+        <button onClick="{{ toggleDensity }}" aria-label="{{ t.densityAria }}" style="background:rgba(18,20,34,.6);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:7px 12px;color:#94A3B8;font-size:12.5px;cursor:pointer;font-family:inherit;backdrop-filter:blur(8px);display:flex;align-items:center;gap:6px;" style-hover="border-color:rgba(37,99,235,.4);color:#fff;" style-focus="outline:2px solid #5b8cff;outline-offset:2px;"><span>{{ densityIcon }}</span><span>{{ densityLabelText }}</span></button>
+
+        <div style="display:flex;background:rgba(18,20,34,.6);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:3px;gap:2px;backdrop-filter:blur(8px);">
+          <sc-for list="{{ langs }}" as="l" hint-placeholder-count="3">
+            <button onClick="{{ l.onClick }}" aria-pressed="{{ l.pressedStr }}" style="{{ l.style }}" style-focus="outline:2px solid #93b4ff;outline-offset:2px;">{{ l.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main style="position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:26px 24px 80px;">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:9px;">
+        <sc-for list="{{ crumbs }}" as="crumb" hint-placeholder-count="3">
+          <sc-if value="{{ crumb.notFirst }}"><span style="color:#475569;font-size:12px;">→</span></sc-if>
+          <span style="{{ crumb.style }}">{{ crumb.label }}</span>
+        </sc-for>
+      </div>
+      <sc-if value="{{ canGoBack }}"><button onClick="{{ back }}" style="background:transparent;border:1px solid rgba(255,255,255,.12);color:#94A3B8;border-radius:9px;padding:7px 13px;font-size:13px;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;" style-hover="border-color:rgba(255,255,255,.32);color:#fff;" style-focus="outline:2px solid #5b8cff;outline-offset:2px;">← {{ t.back }}</button></sc-if>
+    </div>
+
+    <sc-if value="{{ isInput }}" hint-placeholder-val="{{ true }}">
+      <div style="animation:screenIn .35s ease both;">
+        <div style="position:relative;margin-bottom:26px;">
+          <div style="position:absolute;top:-70px;left:-50px;width:460px;height:280px;background:radial-gradient(ellipse,rgba(37,99,235,.28),transparent 70%);filter:blur(18px);pointer-events:none;z-index:0;"></div>
+          <div style="position:absolute;top:-30px;left:220px;width:280px;height:220px;background:radial-gradient(ellipse,rgba(0,212,170,.16),transparent 70%);filter:blur(20px);pointer-events:none;z-index:0;"></div>
+          <div style="position:relative;z-index:1;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:#5b8cff;margin-bottom:11px;display:flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:#2563EB;box-shadow:0 0 9px #2563EB;"></span>{{ t.eyebrow }}</div>
+            <h1 style="font-family:'Space Grotesk',sans-serif;font-size:31px;font-weight:700;margin:0 0 8px;letter-spacing:-.02em;line-height:1.1;text-shadow:0 0 34px rgba(37,99,235,.25);">{{ t.inputTitle }}</h1>
+            <p style="margin:0;color:#94A3B8;font-size:14.5px;max-width:660px;line-height:1.55;">{{ t.inputSub }}</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;">
+              <sc-for list="{{ chips }}" as="chip" hint-placeholder-count="3">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.03em;color:#93b4ff;background:rgba(37,99,235,.12);border:1px solid rgba(37,99,235,.32);padding:5px 11px;border-radius:7px;box-shadow:0 0 14px rgba(37,99,235,.12);">{{ chip }}</span>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:18px;">
+          <sc-for list="{{ inputCards }}" as="card" hint-placeholder-count="4">
+            <div style="background:rgba(18,20,34,.55);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.09);border-radius:18px;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.06), 0 0 20px rgba(37,99,235,.06);transition:border-color .25s, box-shadow .25s;" style-hover="border-color:rgba(37,99,235,.5);box-shadow:0 0 36px rgba(37,99,235,.24), inset 0 1px 0 rgba(255,255,255,.07);">
+              <button onClick="{{ card.onToggle }}" aria-expanded="{{ card.expandedStr }}" style="width:100%;display:flex;align-items:center;gap:14px;padding:16px 18px;background:transparent;border:none;cursor:pointer;text-align:left;color:#fff;font-family:inherit;" style-hover="background:rgba(255,255,255,.025);" style-focus="outline:2px solid #5b8cff;outline-offset:-2px;">
+                <span style="{{ card.iconBoxStyle }}">{{ card.icon }}</span>
+                <span style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;">
+                  <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;">{{ card.title }}</span>
+                  <span style="font-size:12.5px;color:#94A3B8;">{{ card.desc }}</span>
+                </span>
+                <span style="{{ card.statusStyle }}">{{ card.status }}</span>
+                <span style="color:#94A3B8;font-size:11px;width:14px;text-align:center;">{{ card.chevron }}</span>
+              </button>
+              <div style="{{ card.bodyStyle }}">
+                <div style="{{ card.fieldsContainerStyle }}">
+                  <sc-for list="{{ card.fields }}" as="field" hint-placeholder-count="4">
+                    <label style="display:flex;flex-direction:column;gap:6px;">
+                      <span style="font-size:12.5px;color:#94A3B8;font-weight:500;display:flex;align-items:center;gap:6px;">{{ field.label }}<sc-if value="{{ field.tooltip }}"><span title="{{ field.tooltip }}" style="display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:rgba(255,255,255,.08);font-size:10px;color:#94A3B8;cursor:help;">?</span></sc-if></span>
+                      <span style="position:relative;display:flex;">
+                        <input value="{{ field.value }}" onChange="{{ field.onChange }}" onBlur="{{ field.onBlur }}" placeholder="{{ field.ph }}" aria-invalid="{{ field.ariaInvalid }}" style="{{ field.inputStyle }}" style-focus="border-color:#2563EB;box-shadow:0 0 0 3px rgba(37,99,235,.18);" />
+                        <sc-if value="{{ field.valid }}"><span style="position:absolute;right:11px;top:50%;transform:translateY(-50%);color:#22C55E;font-size:13px;font-weight:700;">✓</span></sc-if>
+                      </span>
+                      <sc-if value="{{ field.showError }}" hint-placeholder-val="{{ false }}"><span style="font-size:11.5px;color:#EF4444;">{{ field.errorMsg }}</span></sc-if>
+                    </label>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;gap:15px;margin-top:34px;">
+          <sc-if value="{{ emptyWarning }}" hint-placeholder-val="{{ false }}">
+            <div role="alert" style="display:flex;align-items:center;gap:12px;background:rgba(249,115,22,.09);border:1px solid rgba(249,115,22,.38);border-radius:12px;padding:13px 16px;max-width:540px;box-shadow:0 0 24px rgba(249,115,22,.1);animation:screenIn .25s ease both;">
+              <span style="font-size:18px;">⚠️</span>
+              <div><div style="font-size:13.5px;font-weight:600;">{{ t.emptyTitle }}</div><div style="font-size:12.5px;color:#94A3B8;margin-top:2px;">{{ t.emptyMsg }}</div></div>
+            </div>
+          </sc-if>
+          <button onClick="{{ generate }}" style="display:flex;align-items:center;justify-content:center;gap:9px;min-width:250px;color:#fff;border:none;border-radius:14px;padding:16px 32px;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;cursor:pointer;background:linear-gradient(110deg,#2563EB,#00D4AA 45%,#2563EB);background-size:220% 100%;animation:sheen 5s linear infinite;box-shadow:0 8px 34px rgba(37,99,235,.55);transition:transform .15s, box-shadow .15s;" style-hover="transform:translateY(-1px);box-shadow:0 14px 44px rgba(37,99,235,.75);" style-focus="outline:2px solid #93b4ff;outline-offset:3px;">
+            <sc-if value="{{ generating }}" hint-placeholder-val="{{ false }}"><span style="display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;"></span> {{ t.generating }}</sc-if>
+            <sc-if value="{{ notGenerating }}" hint-placeholder-val="{{ true }}">⚡ {{ t.ctaGenerate }}</sc-if>
+          </button>
+          <div style="position:relative;display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;">
+            <button onClick="{{ loadSample }}" style="background:transparent;border:none;color:#5b8cff;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;" style-hover="text-decoration:underline;" style-focus="outline:2px solid #5b8cff;outline-offset:2px;">{{ t.loadSample }}</button>
+            <span style="color:#334155;">·</span>
+            <span style="color:#94A3B8;font-size:13px;">{{ t.estimate }}</span>
+            <sc-if value="{{ showCoachmark }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#2563EB,#00D4AA);color:#07070C;padding:10px 14px;border-radius:12px;font-size:12.5px;font-weight:600;box-shadow:0 12px 34px rgba(37,99,235,.5);display:flex;align-items:center;gap:10px;white-space:nowrap;z-index:25;animation:screenIn .3s ease both;">
+                {{ t.coachmarkText }}
+                <button onClick="{{ dismissCoachmark }}" style="background:rgba(7,7,12,.2);border:none;color:#07070C;border-radius:7px;padding:4px 9px;font-size:11.5px;cursor:pointer;font-family:inherit;font-weight:700;">{{ t.coachmarkDismiss }}</button>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:780px;margin:0 auto;animation:screenIn .35s ease both;">
+        <div style="text-align:center;margin-bottom:6px;">
+          <h2 style="font-family:'Space Grotesk',sans-serif;font-size:25px;font-weight:700;margin:0 0 8px;animation:titleGlow 3s ease-in-out infinite;">{{ t.loadingTitle }}</h2>
+          <p style="margin:0 0 4px;color:#2563EB;font-size:14.5px;font-weight:500;min-height:20px;">{{ loadingMsg }}</p>
+          <p style="margin:0;color:#64748b;font-size:12.5px;font-family:'JetBrains Mono',monospace;letter-spacing:.02em;">{{ t.loadingSub }}</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px;margin:24px 0;">
+          <sc-for list="{{ agents }}" as="agent" hint-placeholder-count="4">
+            <div style="{{ agent.cardStyle }}">
+              <div style="display:flex;align-items:center;gap:10px;width:100%;">
+                <span style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;">
+                  <sc-if value="{{ agent.processing }}"><span style="position:absolute;inset:0;border-radius:50%;border:1.5px solid #2563EB;animation:ringPulse 1.4s ease-out infinite;"></span></sc-if>
+                  <span style="{{ agent.iconStyle }}">{{ agent.icon }}</span>
+                </span>
+                <span style="font-family:'Space Grotesk',sans-serif;font-size:13.5px;font-weight:600;flex:1;">{{ agent.name }}</span>
+              </div>
+              <span style="font-size:12px;color:#94A3B8;">{{ agent.sub }}</span>
+              <span style="{{ agent.statusStyle }}">{{ agent.statusText }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;margin:8px 0 28px;">
+          <div role="progressbar" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100" style="position:relative;flex:1;height:12px;background:rgba(18,20,34,.7);border:1px solid rgba(255,255,255,.06);border-radius:99px;overflow:hidden;box-shadow:inset 0 1px 4px rgba(0,0,0,.55);">
+            <div style="{{ progressFillStyle }}">
+              <div style="position:absolute;top:0;bottom:0;right:0;width:30px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.7));border-radius:99px;"></div>
+            </div>
+            <div style="position:absolute;top:0;bottom:0;left:0;width:46px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);animation:scanSweep 1.7s ease-in-out infinite;pointer-events:none;"></div>
+          </div>
+          <span style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;width:54px;text-align:right;color:#fff;text-shadow:0 0 14px rgba(37,99,235,.85);">{{ progressPct }}</span>
+        </div>
+        <div style="background:rgba(18,20,34,.55);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:14px;">
+          <div style="height:18px;width:38%;border-radius:7px;background:linear-gradient(90deg,#15172a 25%,#2a2d4a 50%,#15172a 75%);background-size:800px 100%;animation:shimmer 1.4s infinite;"></div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+            <div style="height:64px;border-radius:11px;background:linear-gradient(90deg,#0c0e1a 25%,#1f2238 50%,#0c0e1a 75%);background-size:800px 100%;animation:shimmer 1.4s infinite;"></div>
+            <div style="height:64px;border-radius:11px;background:linear-gradient(90deg,#0c0e1a 25%,#1f2238 50%,#0c0e1a 75%);background-size:800px 100%;animation:shimmer 1.4s infinite;"></div>
+            <div style="height:64px;border-radius:11px;background:linear-gradient(90deg,#0c0e1a 25%,#1f2238 50%,#0c0e1a 75%);background-size:800px 100%;animation:shimmer 1.4s infinite;"></div>
+          </div>
+          <div style="height:13px;width:90%;border-radius:6px;background:linear-gradient(90deg,#15172a 25%,#2a2d4a 50%,#15172a 75%);background-size:800px 100%;animation:shimmer 1.4s infinite;"></div>
+          <div style="height:13px;width:70%;border-radius:6px;background:linear-gradient(90deg,#15172a 25%,#2a2d4a 50%,#15172a 75%);background-size:800px 100%;animation:shimmer 1.4s infinite;"></div>
+        </div>
+        <div style="text-align:center;margin-top:22px;"><button onClick="{{ cancel }}" style="background:transparent;border:none;color:#94A3B8;font-size:13.5px;cursor:pointer;font-family:inherit;text-decoration:underline;text-underline-offset:3px;" style-hover="color:#fff;" style-focus="outline:2px solid #5b8cff;outline-offset:2px;">{{ t.cancel }}</button></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isError }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:520px;margin:60px auto;text-align:center;animation:screenIn .3s ease both;">
+        <div style="width:72px;height:72px;border-radius:20px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.4);display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 20px;box-shadow:0 0 30px rgba(239,68,68,.2);">⚠️</div>
+        <h2 style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;margin:0 0 8px;">{{ t.errorTitle }}</h2>
+        <p style="margin:0 0 26px;color:#94A3B8;font-size:14px;line-height:1.5;">{{ t.errorMsg }}</p>
+        <button onClick="{{ retryFromError }}" style="background:#2563EB;color:#fff;border:none;border-radius:12px;padding:13px 26px;font-size:14.5px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 8px 28px rgba(37,99,235,.45);transition:transform .15s;" style-hover="transform:translateY(-1px);box-shadow:0 12px 36px rgba(37,99,235,.65);" style-focus="outline:2px solid #93b4ff;outline-offset:2px;">{{ t.retry }}</button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isReport }}" hint-placeholder-val="{{ false }}">
+      <div style="animation:screenIn .35s ease both;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:22px;">
+          <div>
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+              <h2 style="font-family:'Space Grotesk',sans-serif;font-size:25px;font-weight:700;margin:0;">{{ storeName }}</h2>
+              <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#22C55E;background:rgba(34,197,94,.12);padding:5px 11px;border-radius:99px;"><span style="width:7px;height:7px;border-radius:50%;background:#22C55E;box-shadow:0 0 7px #22C55E;"></span>{{ t.analysisComplete }}</span>
+            </div>
+            <p style="margin:6px 0 0;color:#94A3B8;font-size:13.5px;">{{ t.generatedOn }} {{ generatedAt }} <span style="color:#475569;">· {{ relativeLabel }}</span></p>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button onClick="{{ copySummary }}" style="background:transparent;color:#94A3B8;border:1px solid rgba(255,255,255,.14);border-radius:11px;padding:11px 16px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:7px;" style-hover="border-color:rgba(255,255,255,.32);color:#fff;" style-focus="outline:2px solid #5b8cff;outline-offset:2px;">📋 {{ t.copySummary }}</button>
+            <button onClick="{{ downloadPDF }}" style="background:#F97316;color:#fff;border:none;border-radius:11px;padding:11px 18px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:8px;box-shadow:0 6px 22px rgba(249,115,22,.35);transition:transform .15s, background .15s;" style-hover="background:#ea6a0c;transform:translateY(-1px);" style-focus="outline:2px solid #fdba74;outline-offset:2px;">⬇ {{ t.downloadPDF }}</button>
+            <button onClick="{{ newAnalysis }}" style="background:transparent;color:#5b8cff;border:1px solid #2563EB;border-radius:11px;padding:11px 18px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .15s;" style-hover="background:rgba(37,99,235,.12);" style-focus="outline:2px solid #93b4ff;outline-offset:2px;">{{ t.newAnalysis }}</button>
+          </div>
+        </div>
+
+        <div style="background:rgba(18,20,34,.55);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:24px;margin-bottom:22px;animation:fadeSlideIn .4s ease both;box-shadow:0 0 30px rgba(37,99,235,.08);">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;"><span style="font-size:17px;">🧭</span><h3 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;">{{ t.execTitle }}</h3><span style="font-size:12px;color:#94A3B8;">{{ t.execSub }}</span></div>
+          <div style="display:flex;align-items:center;gap:28px;flex-wrap:wrap;">
+            <div style="position:relative;width:120px;height:120px;flex-shrink:0;">
+              <svg width="120" height="120" viewBox="0 0 120 120" style="transform:rotate(-90deg);">
+                <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="10"></circle>
+                <circle cx="60" cy="60" r="52" fill="none" stroke="{{ healthColor }}" stroke-width="10" stroke-linecap="round" stroke-dasharray="{{ healthDash }}" style="transition:stroke-dasharray .6s ease;"></circle>
+              </svg>
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                <div style="font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;text-shadow:0 0 20px rgba(255,255,255,.15);">{{ healthScore }}</div>
+                <div style="font-size:10px;color:#94A3B8;letter-spacing:.04em;text-align:center;">{{ t.healthLabel }}</div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,minmax(130px,1fr));gap:12px;flex:1;min-width:320px;">
+              <sc-for list="{{ kpis }}" as="kpi" hint-placeholder-count="3">
+                <div style="background:rgba(7,7,12,.5);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px;">
+                  <div style="{{ kpi.valueStyle }}">{{ kpi.value }}</div>
+                  <div style="font-size:11.5px;color:#94A3B8;margin-top:4px;">{{ kpi.label }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-end;gap:20px;padding-top:20px;margin-top:20px;border-top:1px solid rgba(255,255,255,.07);flex-wrap:wrap;">
+            <div>
+              <div style="font-size:12px;color:#94A3B8;margin-bottom:10px;">{{ t.projectionLabel }}</div>
+              <div style="display:flex;align-items:flex-end;gap:22px;height:110px;">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+                  <div style="{{ projActualStyle }}"></div>
+                  <div style="font-size:11px;color:#94A3B8;">{{ t.projectionActual }}</div>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+                  <div style="{{ projProjectedStyle }}"></div>
+                  <div style="font-size:11px;color:#22C55E;font-weight:600;">{{ t.projectionProjected }} +12%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:linear-gradient(#0e1020,#0e1020) padding-box, linear-gradient(135deg,rgba(249,115,22,.75),rgba(37,99,235,.5)) border-box;border:1px solid transparent;border-radius:18px;padding:22px;margin-bottom:22px;animation:fadeSlideIn .45s ease both;box-shadow:0 0 36px rgba(249,115,22,.12);">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;"><span style="font-size:18px;">⚡</span><h3 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;">{{ t.priorityTitle }}</h3><span style="font-size:12px;color:#94A3B8;">{{ t.prioritySub }}</span></div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <sc-for list="{{ priorityActions }}" as="pa" hint-placeholder-count="3">
+              <div style="{{ pa.itemStyle }}" style-hover="border-color:rgba(255,255,255,.16);">
+                <span style="{{ pa.iconStyle }}">{{ pa.icon }}</span>
+                <div style="flex:1;min-width:0;"><div style="font-size:14.5px;font-weight:600;">{{ pa.text }}</div><div style="font-size:12.5px;color:#94A3B8;margin-top:2px;">{{ pa.metric }}</div></div>
+                <span style="{{ pa.badgeStyle }}">{{ pa.prio }}</span>
+                <button onClick="{{ pa.onApply }}" style="{{ pa.applyStyle }}" style-focus="outline:2px solid #5b8cff;outline-offset:2px;">{{ pa.applyLabel }}</button>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(440px,1fr));gap:18px;">
+          <sc-for list="{{ agentResults }}" as="card" hint-placeholder-count="4">
+            <div style="{{ card.rootStyle }}">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <span style="{{ card.iconBoxStyle }}">{{ card.icon }}</span>
+                <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;flex:1;">{{ card.name }}</span>
+                <span style="{{ card.prioStyle }}">{{ card.prio }}</span>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+                <sc-for list="{{ card.metrics }}" as="m" hint-placeholder-count="3">
+                  <div style="background:rgba(7,7,12,.55);border:1px solid rgba(255,255,255,.05);border-radius:11px;padding:12px;">
+                    <div style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em;text-shadow:0 0 18px rgba(255,255,255,.14);">{{ m.value }}</div>
+                    <div style="font-size:11.5px;color:#94A3B8;margin-top:2px;">{{ m.label }}</div>
+                    <div style="{{ m.deltaStyle }}">{{ m.delta }}</div>
+                    <svg width="88" height="26" viewBox="0 0 88 26" style="display:block;margin-top:8px;overflow:visible;">
+                      <polyline points="{{ m.sparkPoints }}" fill="none" stroke="{{ m.sparkColor }}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                    </svg>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <sc-for list="{{ card.findings }}" as="f" hint-placeholder-count="3">
+                  <div style="display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:#cbd5e1;line-height:1.45;"><span style="{{ card.bulletStyle }}"></span><span>{{ f }}</span></div>
+                </sc-for>
+              </div>
+              <div style="{{ card.recStyle }}"><div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#94A3B8;margin-bottom:5px;">{{ t.recLabel }}</div><div style="font-size:13.5px;line-height:1.5;color:#fff;">{{ card.rec }}</div></div>
+              <button onClick="{{ card.onToggleExpand }}" aria-expanded="{{ card.expandedStr }}" style="align-self:flex-start;background:transparent;border:1px solid rgba(255,255,255,.14);color:#93b4ff;border-radius:9px;padding:7px 13px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;" style-hover="border-color:rgba(37,99,235,.55);background:rgba(37,99,235,.08);" style-focus="outline:2px solid #5b8cff;outline-offset:2px;">{{ card.expandLabel }}</button>
+              <sc-if value="{{ card.expanded }}" hint-placeholder-val="{{ false }}">
+                <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:14px 15px;font-size:13px;line-height:1.55;color:#cbd5e1;animation:screenIn .25s ease both;">{{ card.detail }}</div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin-top:30px;padding-top:20px;border-top:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#64748b;font-size:12.5px;">
+          <span style="display:flex;align-items:center;gap:8px;"><span style="width:18px;height:18px;border-radius:5px;background:linear-gradient(135deg,#2563EB,#F97316);display:inline-flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:#fff;">H</span>{{ t.footerBy }}</span>
+          <span style="font-family:'JetBrains Mono',monospace;">v2.5 · {{ generatedAt }}</span>
+        </div>
+      </div>
+    </sc-if>
+
+  </main>
+
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div role="status" aria-live="polite" style="position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:rgba(18,20,34,.92);backdrop-filter:blur(10px);border:1px solid rgba(34,197,94,.4);border-radius:12px;padding:12px 18px;display:flex;align-items:center;gap:10px;box-shadow:0 12px 34px rgba(0,0,0,.5);animation:toastIn .3s ease;z-index:50;color:#fff;font-size:14px;font-weight:500;"><span style="color:#22C55E;font-weight:700;">✓</span>{{ toastMsg }}</div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 1280, &quot;height&quot;: 1300 },
+  &quot;initialScreen&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;input&quot;, &quot;loading&quot;, &quot;report&quot;, &quot;error&quot;], &quot;default&quot;: &quot;input&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;storeName&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;TiendaNova&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;analysisSpeed&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;Rápido&quot;, &quot;Normal&quot;, &quot;Lento&quot;], &quot;default&quot;: &quot;Normal&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;demoMode&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;Normal&quot;, &quot;Simular error de conexión&quot;], &quot;default&quot;: &quot;Normal&quot;, &quot;tsType&quot;: &quot;string&quot; }
+}">
+const CARD_ORDER = ['campanas','productos','clientes','seo'];
+const CARD_ICONS = { campanas:'📊', productos:'📦', clientes:'👤', seo:'🔍' };
+const FIELD_KEYS = {
+  campanas:['roas','cpa','ctr','budget'],
+  productos:['skus','units','stock','top'],
+  clientes:['abandono','segmentos','ticket','recompra'],
+  seo:['temas','competidores','keywords','dominio'],
+};
+const FIELD_TYPES = {
+  campanas:['multiplier','currency','percent','currency'],
+  productos:['integer','integer','integer','text'],
+  clientes:['percent','integer','currency','percent'],
+  seo:['text','text','integer','domain'],
+};
+const SAMPLE = { roas:'3.5x', cpa:'42', ctr:'1.3', budget:'12000', skus:'142', units:'2340', stock:'870', top:'Auriculares X', abandono:'68', segmentos:'4', ticket:'54', recompra:'22', temas:'envíos gratis, reseñas', competidores:'tiendaA, tiendaB', keywords:'30', dominio:'tiendanova.com' };
+
+const ERR_KEY = { multiplier:'errMultiplier', currency:'errCurrency', percent:'errPercent', integer:'errNumber', domain:'errDomain', text:null };
+function validateValue(type, raw){
+  const v = (raw || '').trim();
+  if (!v) return null;
+  switch(type){
+    case 'multiplier': return /^\d+(\.\d+)?x?$/i.test(v) ? null : ERR_KEY.multiplier;
+    case 'currency': return /^\d+(\.\d+)?$/.test(v) ? null : ERR_KEY.currency;
+    case 'percent': { if(!/^\d+(\.\d+)?$/.test(v)) return ERR_KEY.percent; const n=parseFloat(v); return (n>=0 && n<=100) ? null : ERR_KEY.percent; }
+    case 'integer': return /^\d+$/.test(v) ? null : ERR_KEY.integer;
+    case 'domain': return /^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(v) ? null : ERR_KEY.domain;
+    default: return null;
+  }
+}
+function sparkPoints(data, w, h){
+  const min = Math.min.apply(null, data), max = Math.max.apply(null, data);
+  const range = (max - min) || 1;
+  const stepX = w / (data.length - 1);
+  return data.map(function(v,i){ return (i*stepX).toFixed(1) + ',' + (h - ((v-min)/range)*h).toFixed(1); }).join(' ');
+}
+
+const LEVELS = { urgent:{c:'#EF4444',bg:'rgba(239,68,68,.14)'}, attention:{c:'#F97316',bg:'rgba(249,115,22,.14)'}, optimize:{c:'#2563EB',bg:'rgba(37,99,235,.14)'}, ok:{c:'#22C55E',bg:'rgba(34,197,94,.14)'} };
+const ACTION_ICONS = ['📊','📦','👤'];
+const ACTION_LEVELS = ['urgent','attention','optimize'];
+const RESULT_ICONS = ['📊','📦','👤','🔍'];
+const RESULT_LEVELS = ['urgent','attention','attention','ok'];
+const METRIC_VALUES = { 0:['2.1x','$42','1.3%'], 1:['142','2,340','870'], 2:['68%','22%','$54'], 3:['34','12','+15%'] };
+const METRIC_DC = { 0:['#EF4444','#EF4444','#F97316'], 1:['#F97316','#22C55E','#94A3B8'], 2:['#EF4444','#22C55E','#94A3B8'], 3:['#22C55E','#22C55E','#22C55E'] };
+const SPARK_DATA = {
+  0: [ [3.8,3.6,3.4,3.0,2.6,2.3,2.1], [30,33,35,37,39,41,42], [1.9,1.8,1.7,1.6,1.5,1.4,1.3] ],
+  1: [ [3,4,5,5,6,7,8], [1900,2000,2050,2150,2200,2280,2340], [900,890,885,878,873,871,870] ],
+  2: [ [59,61,63,64,65,67,68], [17,18,19,20,21,21,22], [55,54,55,53,54,54,54] ],
+  3: [ [26,27,29,30,31,33,34], [15,14.5,14,13.5,13,12.5,12], [0,3,5,7,9,12,15] ],
+};
+
+const PRIO_LABEL = {
+  ES:{urgent:'Urgente',attention:'Atención',optimize:'Optimizar',ok:'OK'},
+  EN:{urgent:'Urgent',attention:'Attention',optimize:'Optimize',ok:'OK'},
+  PT:{urgent:'Urgente',attention:'Atenção',optimize:'Otimizar',ok:'OK'},
+};
+
+const HIST_KEY = 'helix_history_v1';
+const FORM_KEY = 'helix_form_v1';
+const LANG_KEY = 'helix_lang_v1';
+const DENSITY_KEY = 'helix_density_v1';
+const COACH_KEY = 'helix_coachmark_seen_v1';
+
+const I18N = {
+  ES: {
+    tagline:'Tu copiloto de crecimiento con IA', statusOnline:'Sistema en línea', back:'Volver',
+    eyebrow:'Plataforma de agentes autónomos',
+    inputTitle:'Ingresá los datos de tu comercio',
+    inputSub:'Completá las 4 categorías y nuestros agentes de IA analizarán tu operación en tiempo real para detectar las mayores oportunidades de crecimiento.',
+    chips:['Multi-agente','RAG','LangGraph'],
+    crumbs:['Datos','Análisis','Reporte'],
+    statusComplete:'Completo', statusPending:'Pendiente',
+    ctaGenerate:'Generar Reporte', generating:'Generando…', loadSample:'Cargar datos de ejemplo', estimate:'Análisis en ~30 segundos',
+    loadingTitle:'Analizando tu comercio', loadingSub:'Agentes RAG + LangGraph procesando tus datos en tiempo real',
+    statusDone:'Completado', statusProcessing:'Procesando…', statusWaiting:'En espera', compiling:'Compilando reporte…', cancel:'Cancelar análisis',
+    analysisComplete:'Análisis completado', generatedOn:'Generado el', downloadPDF:'Descargar PDF', newAnalysis:'Nuevo análisis',
+    priorityTitle:'Acciones Prioritarias', prioritySub:'Top 3 detectadas por los agentes', recLabel:'Recomendación', footerBy:'Generado por Helix Growth Copilot',
+    toastSample:'Datos de ejemplo cargados correctamente', toastCancel:'Análisis cancelado', toastPdf:'Generando PDF del reporte…',
+    execTitle:'Resumen Ejecutivo', execSub:'Diagnóstico general del comercio', healthLabel:'Salud del comercio',
+    kpiRecoverable:'Ingresos recuperables', kpiUrgent:'Acciones urgentes', kpiAttention:'Agentes en atención',
+    projectionLabel:'Proyección a 30 días si se aplican las acciones', projectionActual:'Actual', projectionProjected:'Proyectado',
+    errorTitle:'No se pudo conectar', errorMsg:'Hubo un problema al conectar con los agentes de análisis. Verificá tu conexión e intentá de nuevo.', retry:'Reintentar →',
+    emptyTitle:'Todavía no hay datos', emptyMsg:'Ingresá al menos un dato en alguna categoría, o usá "Cargar datos de ejemplo" para probar la plataforma.',
+    viewFull:'Ver análisis completo', viewLess:'Ver menos',
+    applyAction:'Aplicar', applied:'Aplicada ✓',
+    copySummary:'Copiar resumen', copied:'Resumen copiado ✓',
+    historyBtn:'Historial', historyTitle:'Historial de análisis', historyEmpty:'Todavía no generaste ningún reporte.',
+    densityComfortable:'Cómodo', densityCompact:'Compacto', densityAria:'Cambiar densidad',
+    coachmarkText:'Probá la plataforma sin cargar datos manualmente', coachmarkDismiss:'Entendido',
+    justNow:'ahora mismo', minAgo:'hace {n} min', hourAgo:'hace {n} h',
+    errNumber:'Ingresá un número válido', errPercent:'Ingresá un porcentaje entre 0 y 100', errCurrency:'Ingresá un monto válido', errMultiplier:'Ingresá un valor como 3.5x', errDomain:'Ingresá un dominio válido (ej. tienda.com)',
+    cards:{
+      campanas:{title:'Campañas', desc:'ROAS, CPA, CTR, presupuesto activo', fields:[{label:'ROAS objetivo',ph:'ej. 3.5x',tip:'Retorno sobre inversión publicitaria deseado'},{label:'CPA actual ($)',ph:'ej. 38'},{label:'CTR (%)',ph:'ej. 1.8',tip:'Click-through rate promedio de tus anuncios'},{label:'Presupuesto activo ($)',ph:'ej. 12000'}]},
+      productos:{title:'Productos', desc:'SKU, unidades vendidas, stock', fields:[{label:'SKUs totales',ph:'ej. 142'},{label:'Unidades vendidas (30d)',ph:'ej. 2340'},{label:'Stock disponible',ph:'ej. 870'},{label:'Producto top',ph:'ej. Auriculares X'}]},
+      clientes:{title:'Clientes', desc:'Abandono de carrito, segmentos', fields:[{label:'% abandono carrito',ph:'ej. 68',tip:'Porcentaje de carritos no finalizados'},{label:'Segmentos activos',ph:'ej. 4'},{label:'Ticket promedio ($)',ph:'ej. 54'},{label:'Tasa de recompra (%)',ph:'ej. 22'}]},
+      seo:{title:'SEO', desc:'Temas a investigar, competidores', fields:[{label:'Temas a investigar',ph:'ej. envíos gratis, reseñas'},{label:'Competidores',ph:'ej. tiendaA, tiendaB'},{label:'Keywords objetivo',ph:'ej. 30'},{label:'Dominio',ph:'ej. tiendanova.com'}]},
+    },
+    agentNames:['Agente Ads','Agente Producto','Agente Cliente','Agente SEO'],
+    agentSubs:['Campañas y publicidad','Inventario y catálogo','Comportamiento de compra','Posicionamiento orgánico'],
+    agentMsgs:['Analizando campañas…','Revisando inventario y stock…','Evaluando comportamiento de clientes…','Investigando oportunidades SEO…'],
+    actions:[{text:'Pausar campaña "BF Remarketing"',metric:'ROAS 1.4x · $3.2k de gasto sin retorno'},{text:'Reponer stock de 8 SKUs de alta rotación',metric:'Quiebre proyectado en ~6 días'},{text:'Activar email de recuperación de carrito',metric:'68% abandono · ~$8.4k recuperables/mes'}],
+    results:[
+      {labels:['ROAS','CPA','CTR'],deltas:['▼ 0.9x vs meta','▲ 11% mensual','▼ bajo benchmark'],findings:['2 campañas con ROAS < 1.5x consumen el 38% del presupuesto.','El CPA subió 11% en los últimos 30 días.','Las creatividades de remarketing muestran fatiga (frecuencia 7.2).'],rec:'Pausar las 2 campañas de bajo rendimiento y redistribuir $3.2k hacia Prospecting, que mantiene un ROAS de 3.8x.',detail:'Detectamos que la campaña "BF Remarketing" concentra la mayor parte del gasto ineficiente, con una frecuencia de impactos elevada que satura a la misma audiencia. Prospecting, en cambio, sigue capturando usuarios nuevos con un costo de adquisición 30% menor.'},
+      {labels:['SKUs activos','Unidades (30d)','Stock total'],deltas:['8 en stock crítico','▲ 6% mensual','rotación 18 días'],findings:['8 SKUs de alta rotación se agotarán en ~6 días.','El top seller concentra el 22% de los ingresos.','12 SKUs sin ventas en 60 días (capital inmovilizado).'],rec:'Reponer los 8 SKUs críticos y liquidar los 12 sin rotación con un bundle para liberar ~$5.6k.',detail:'Los 8 SKUs críticos representan el 34% de las ventas totales, por lo que un quiebre de stock impactaría directo en los ingresos semanales. Los 12 SKUs sin movimiento llevan más de 60 días inmovilizando capital de inventario.'},
+      {labels:['Abandono carrito','Recompra','Ticket promedio'],deltas:['▲ 9% vs sector','▲ 3% mensual','estable'],findings:['68% de abandono, 14 puntos sobre el promedio del sector.','El segmento "Recurrentes" genera 3.1x más LTV.','No hay un flujo de recuperación de carrito activo.'],rec:'Implementar email + WhatsApp de recuperación a las 2h. Potencial de recuperar ~$8.4k mensuales.',detail:'El abandono se concentra en el paso de envío, donde los costos aparecen tarde en el proceso. Un flujo de recuperación con incentivo escalonado (recordatorio + descuento a las 24h) suele recuperar entre el 10% y 15% de los carritos.'},
+      {labels:['Keywords ranking','Posición media','Tráfico orgánico'],deltas:['▲ 5 nuevas','▲ mejoró 3 pos.','últimos 30d'],findings:['El tráfico orgánico crece de forma sostenida (+15%).','Oportunidad en 6 keywords de cola larga (pos. 11-15).','El competidor "tiendaA" gana terreno en "envíos gratis".'],rec:'Crear 3 artículos para las keywords en posición 11-15: bajo esfuerzo y alto potencial de llegar al top 5.',detail:'El dominio compite con 2 competidores en 6 keywords de cola larga donde hoy aparece en posiciones 11 a 15. Moverse al top 5 en esas keywords podría duplicar el tráfico orgánico en los próximos 60 días.'},
+    ],
+  },
+  EN: {
+    tagline:'Your AI growth copilot', statusOnline:'System online', back:'Back',
+    eyebrow:'Autonomous agent platform',
+    inputTitle:"Enter your store's data",
+    inputSub:'Complete the 4 categories and our AI agents will analyze your operation in real time to surface the biggest growth opportunities.',
+    chips:['Multi-agent','RAG','LangGraph'],
+    crumbs:['Data','Analysis','Report'],
+    statusComplete:'Complete', statusPending:'Pending',
+    ctaGenerate:'Generate Report', generating:'Generating…', loadSample:'Load sample data', estimate:'Analysis in ~30 seconds',
+    loadingTitle:'Analyzing your store', loadingSub:'RAG + LangGraph agents processing your data in real time',
+    statusDone:'Completed', statusProcessing:'Processing…', statusWaiting:'On hold', compiling:'Compiling report…', cancel:'Cancel analysis',
+    analysisComplete:'Analysis complete', generatedOn:'Generated on', downloadPDF:'Download PDF', newAnalysis:'New analysis',
+    priorityTitle:'Priority Actions', prioritySub:'Top 3 detected by the agents', recLabel:'Recommendation', footerBy:'Generated by Helix Growth Copilot',
+    toastSample:'Sample data loaded successfully', toastCancel:'Analysis cancelled', toastPdf:'Generating report PDF…',
+    execTitle:'Executive Summary', execSub:'Overall store diagnosis', healthLabel:'Store health',
+    kpiRecoverable:'Recoverable revenue', kpiUrgent:'Urgent actions', kpiAttention:'Agents in attention',
+    projectionLabel:'30-day projection if actions are applied', projectionActual:'Current', projectionProjected:'Projected',
+    errorTitle:'Could not connect', errorMsg:'There was a problem connecting to the analysis agents. Check your connection and try again.', retry:'Retry →',
+    emptyTitle:'No data yet', emptyMsg:'Enter at least one value in any category, or use "Load sample data" to try the platform.',
+    viewFull:'View full analysis', viewLess:'View less',
+    applyAction:'Apply', applied:'Applied ✓',
+    copySummary:'Copy summary', copied:'Summary copied ✓',
+    historyBtn:'History', historyTitle:'Analysis history', historyEmpty:"You haven't generated any report yet.",
+    densityComfortable:'Comfortable', densityCompact:'Compact', densityAria:'Toggle density',
+    coachmarkText:'Try the platform without entering data manually', coachmarkDismiss:'Got it',
+    justNow:'just now', minAgo:'{n} min ago', hourAgo:'{n} h ago',
+    errNumber:'Enter a valid number', errPercent:'Enter a percentage between 0 and 100', errCurrency:'Enter a valid amount', errMultiplier:'Enter a value like 3.5x', errDomain:'Enter a valid domain (e.g. store.com)',
+    cards:{
+      campanas:{title:'Campaigns', desc:'ROAS, CPA, CTR, active budget', fields:[{label:'Target ROAS',ph:'e.g. 3.5x',tip:'Desired return on ad spend'},{label:'Current CPA ($)',ph:'e.g. 38'},{label:'CTR (%)',ph:'e.g. 1.8',tip:'Average click-through rate of your ads'},{label:'Active budget ($)',ph:'e.g. 12000'}]},
+      productos:{title:'Products', desc:'SKU, units sold, stock', fields:[{label:'Total SKUs',ph:'e.g. 142'},{label:'Units sold (30d)',ph:'e.g. 2340'},{label:'Available stock',ph:'e.g. 870'},{label:'Top product',ph:'e.g. Headphones X'}]},
+      clientes:{title:'Customers', desc:'Cart abandonment, segments', fields:[{label:'Cart abandonment %',ph:'e.g. 68',tip:'Percentage of carts not completed'},{label:'Active segments',ph:'e.g. 4'},{label:'Avg. order value ($)',ph:'e.g. 54'},{label:'Repurchase rate (%)',ph:'e.g. 22'}]},
+      seo:{title:'SEO', desc:'Topics to research, competitors', fields:[{label:'Topics to research',ph:'e.g. free shipping, reviews'},{label:'Competitors',ph:'e.g. storeA, storeB'},{label:'Target keywords',ph:'e.g. 30'},{label:'Domain',ph:'e.g. tiendanova.com'}]},
+    },
+    agentNames:['Ads Agent','Product Agent','Customer Agent','SEO Agent'],
+    agentSubs:['Campaigns & advertising','Inventory & catalog','Purchase behavior','Organic positioning'],
+    agentMsgs:['Analyzing campaigns…','Reviewing inventory & stock…','Evaluating customer behavior…','Researching SEO opportunities…'],
+    actions:[{text:'Pause "BF Remarketing" campaign',metric:'ROAS 1.4x · $3.2k spend with no return'},{text:'Restock 8 high-rotation SKUs',metric:'Stockout projected in ~6 days'},{text:'Enable cart recovery email',metric:'68% abandonment · ~$8.4k recoverable/mo'}],
+    results:[
+      {labels:['ROAS','CPA','CTR'],deltas:['▼ 0.9x vs target','▲ 11% monthly','▼ below benchmark'],findings:['2 campaigns with ROAS < 1.5x consume 38% of the budget.','CPA rose 11% in the last 30 days.','Remarketing creatives show fatigue (frequency 7.2).'],rec:'Pause the 2 underperforming campaigns and reallocate $3.2k to Prospecting, which holds a 3.8x ROAS.',detail:'The "BF Remarketing" campaign concentrates most of the inefficient spend, with a high frequency that saturates the same audience. Prospecting keeps capturing new users at a 30% lower acquisition cost.'},
+      {labels:['Active SKUs','Units (30d)','Total stock'],deltas:['8 in critical stock','▲ 6% monthly','18-day rotation'],findings:['8 high-rotation SKUs will run out in ~6 days.','The top seller accounts for 22% of revenue.','12 SKUs with no sales in 60 days (tied-up capital).'],rec:'Restock the 8 critical SKUs and clear the 12 stagnant ones with a bundle to free up ~$5.6k.',detail:'The 8 critical SKUs represent 34% of total sales, so a stockout would directly hit weekly revenue. The 12 stagnant SKUs have tied up inventory capital for over 60 days.'},
+      {labels:['Cart abandonment','Repurchase','Avg order value'],deltas:['▲ 9% vs sector','▲ 3% monthly','stable'],findings:['68% abandonment, 14 points above the sector average.','The "Returning" segment generates 3.1x more LTV.','No active cart-recovery flow in place.'],rec:'Implement email + WhatsApp recovery at the 2h mark. Potential to recover ~$8.4k monthly.',detail:'Abandonment concentrates at the shipping step, where costs appear late in the flow. A staged incentive recovery flow (reminder + 24h discount) typically recovers 10-15% of abandoned carts.'},
+      {labels:['Ranking keywords','Avg position','Organic traffic'],deltas:['▲ 5 new','▲ up 3 pos.','last 30d'],findings:['Organic traffic is growing steadily (+15%).','Opportunity in 6 long-tail keywords (pos. 11-15).','Competitor "storeA" is gaining ground on "free shipping".'],rec:'Create 3 articles for the keywords in positions 11-15: low effort, high potential to reach the top 5.',detail:'The domain competes with 2 rivals on 6 long-tail keywords currently at positions 11-15. Reaching the top 5 on those could double organic traffic over the next 60 days.'},
+    ],
+  },
+  PT: {
+    tagline:'Seu copiloto de crescimento com IA', statusOnline:'Sistema online', back:'Voltar',
+    eyebrow:'Plataforma de agentes autônomos',
+    inputTitle:'Insira os dados da sua loja',
+    inputSub:'Preencha as 4 categorias e nossos agentes de IA analisarão sua operação em tempo real para encontrar as maiores oportunidades de crescimento.',
+    chips:['Multiagente','RAG','LangGraph'],
+    crumbs:['Dados','Análise','Relatório'],
+    statusComplete:'Completo', statusPending:'Pendente',
+    ctaGenerate:'Gerar Relatório', generating:'Gerando…', loadSample:'Carregar dados de exemplo', estimate:'Análise em ~30 segundos',
+    loadingTitle:'Analisando sua loja', loadingSub:'Agentes RAG + LangGraph processando seus dados em tempo real',
+    statusDone:'Concluído', statusProcessing:'Processando…', statusWaiting:'Em espera', compiling:'Compilando relatório…', cancel:'Cancelar análise',
+    analysisComplete:'Análise concluída', generatedOn:'Gerado em', downloadPDF:'Baixar PDF', newAnalysis:'Nova análise',
+    priorityTitle:'Ações Prioritárias', prioritySub:'Top 3 detectadas pelos agentes', recLabel:'Recomendação', footerBy:'Gerado por Helix Growth Copilot',
+    toastSample:'Dados de exemplo carregados com sucesso', toastCancel:'Análise cancelada', toastPdf:'Gerando PDF do relatório…',
+    execTitle:'Resumo Executivo', execSub:'Diagnóstico geral da loja', healthLabel:'Saúde da loja',
+    kpiRecoverable:'Receita recuperável', kpiUrgent:'Ações urgentes', kpiAttention:'Agentes em atenção',
+    projectionLabel:'Projeção de 30 dias se as ações forem aplicadas', projectionActual:'Atual', projectionProjected:'Projetado',
+    errorTitle:'Não foi possível conectar', errorMsg:'Houve um problema ao conectar com os agentes de análise. Verifique sua conexão e tente novamente.', retry:'Tentar novamente →',
+    emptyTitle:'Ainda não há dados', emptyMsg:'Insira ao menos um dado em alguma categoria, ou use "Carregar dados de exemplo" para testar a plataforma.',
+    viewFull:'Ver análise completa', viewLess:'Ver menos',
+    applyAction:'Aplicar', applied:'Aplicada ✓',
+    copySummary:'Copiar resumo', copied:'Resumo copiado ✓',
+    historyBtn:'Histórico', historyTitle:'Histórico de análises', historyEmpty:'Você ainda não gerou nenhum relatório.',
+    densityComfortable:'Confortável', densityCompact:'Compacto', densityAria:'Alternar densidade',
+    coachmarkText:'Experimente a plataforma sem carregar dados manualmente', coachmarkDismiss:'Entendi',
+    justNow:'agora mesmo', minAgo:'há {n} min', hourAgo:'há {n} h',
+    errNumber:'Insira um número válido', errPercent:'Insira uma porcentagem entre 0 e 100', errCurrency:'Insira um valor válido', errMultiplier:'Insira um valor como 3.5x', errDomain:'Insira um domínio válido (ex. loja.com)',
+    cards:{
+      campanas:{title:'Campanhas', desc:'ROAS, CPA, CTR, orçamento ativo', fields:[{label:'ROAS alvo',ph:'ex. 3.5x',tip:'Retorno desejado sobre investimento em anúncios'},{label:'CPA atual ($)',ph:'ex. 38'},{label:'CTR (%)',ph:'ex. 1.8',tip:'Taxa de cliques média dos seus anúncios'},{label:'Orçamento ativo ($)',ph:'ex. 12000'}]},
+      productos:{title:'Produtos', desc:'SKU, unidades vendidas, estoque', fields:[{label:'SKUs totais',ph:'ex. 142'},{label:'Unidades vendidas (30d)',ph:'ex. 2340'},{label:'Estoque disponível',ph:'ex. 870'},{label:'Produto top',ph:'ex. Fones X'}]},
+      clientes:{title:'Clientes', desc:'Abandono de carrinho, segmentos', fields:[{label:'% abandono carrinho',ph:'ex. 68',tip:'Porcentagem de carrinhos não finalizados'},{label:'Segmentos ativos',ph:'ex. 4'},{label:'Ticket médio ($)',ph:'ex. 54'},{label:'Taxa de recompra (%)',ph:'ex. 22'}]},
+      seo:{title:'SEO', desc:'Temas a pesquisar, concorrentes', fields:[{label:'Temas a pesquisar',ph:'ex. frete grátis, avaliações'},{label:'Concorrentes',ph:'ex. lojaA, lojaB'},{label:'Keywords alvo',ph:'ex. 30'},{label:'Domínio',ph:'ex. tiendanova.com'}]},
+    },
+    agentNames:['Agente Ads','Agente Produto','Agente Cliente','Agente SEO'],
+    agentSubs:['Campanhas e publicidade','Inventário e catálogo','Comportamento de compra','Posicionamento orgânico'],
+    agentMsgs:['Analisando campanhas…','Revisando inventário e estoque…','Avaliando comportamento de clientes…','Investigando oportunidades de SEO…'],
+    actions:[{text:'Pausar campanha "BF Remarketing"',metric:'ROAS 1.4x · $3.2k de gasto sem retorno'},{text:'Repor estoque de 8 SKUs de alta rotação',metric:'Ruptura prevista em ~6 dias'},{text:'Ativar e-mail de recuperação de carrinho',metric:'68% de abandono · ~$8.4k recuperáveis/mês'}],
+    results:[
+      {labels:['ROAS','CPA','CTR'],deltas:['▼ 0.9x vs meta','▲ 11% mensal','▼ abaixo do benchmark'],findings:['2 campanhas com ROAS < 1.5x consomem 38% do orçamento.','O CPA subiu 11% nos últimos 30 dias.','Os criativos de remarketing mostram fadiga (frequência 7.2).'],rec:'Pausar as 2 campanhas de baixo desempenho e redistribuir $3.2k para Prospecting, que mantém um ROAS de 3.8x.',detail:'A campanha "BF Remarketing" concentra a maior parte do gasto ineficiente, com alta frequência que satura a mesma audiência. Prospecting continua captando novos usuários com custo de aquisição 30% menor.'},
+      {labels:['SKUs ativos','Unidades (30d)','Estoque total'],deltas:['8 em estoque crítico','▲ 6% mensal','rotação 18 dias'],findings:['8 SKUs de alta rotação se esgotarão em ~6 dias.','O top seller concentra 22% da receita.','12 SKUs sem vendas em 60 dias (capital imobilizado).'],rec:'Repor os 8 SKUs críticos e liquidar os 12 sem rotação com um bundle para liberar ~$5.6k.',detail:'Os 8 SKUs críticos representam 34% das vendas totais, então uma ruptura impactaria diretamente a receita semanal. Os 12 SKUs parados imobilizam capital de estoque há mais de 60 dias.'},
+      {labels:['Abandono carrinho','Recompra','Ticket médio'],deltas:['▲ 9% vs setor','▲ 3% mensal','estável'],findings:['68% de abandono, 14 pontos acima da média do setor.','O segmento "Recorrentes" gera 3.1x mais LTV.','Não há um fluxo de recuperação de carrinho ativo.'],rec:'Implementar e-mail + WhatsApp de recuperação em 2h. Potencial de recuperar ~$8.4k mensais.',detail:'O abandono se concentra na etapa de frete, onde os custos aparecem tarde no processo. Um fluxo de recuperação com incentivo escalonado (lembrete + desconto em 24h) costuma recuperar 10-15% dos carrinhos.'},
+      {labels:['Keywords ranking','Posição média','Tráfego orgânico'],deltas:['▲ 5 novas','▲ subiu 3 pos.','últimos 30d'],findings:['O tráfego orgânico cresce de forma sustentada (+15%).','Oportunidade em 6 keywords de cauda longa (pos. 11-15).','O concorrente "lojaA" ganha terreno em "frete grátis".'],rec:'Criar 3 artigos para as keywords nas posições 11-15: baixo esforço e alto potencial de chegar ao top 5.',detail:'O domínio compete com 2 concorrentes em 6 keywords de cauda longa hoje nas posições 11 a 15. Chegar ao top 5 nelas pode dobrar o tráfego orgânico nos próximos 60 dias.'},
+    ],
+  },
+};
+
+class Component extends DCLogic {
+  state = {
+    screen: 'input', lang: 'ES', form: {}, touched: {},
+    expanded: { campanas: true, productos: false, clientes: false, seo: false },
+    generating: false, progress: 0,
+    agentStatus: ['waiting','waiting','waiting','waiting'],
+    loadingMsg: '', toast: null, generatedAt: '', generatedAtDate: null, width: 1280,
+    emptyWarning: false, density: 'comfortable', showHistory: false, history: [],
+    actionsApplied: [false,false,false], expandedResults: [false,false,false,false],
+    showCoachmark: false, storeNameOverride: null, tick: 0,
+  };
+
+  componentDidMount(){
+    this._onResize = () => this.setState({ width: window.innerWidth });
+    window.addEventListener('resize', this._onResize);
+    this._onResize();
+    this.loadPersisted();
+    const init = this.props.initialScreen;
+    if (init === 'loading') { this.setState({ screen:'loading' }); this.runLoading(); }
+    else if (init === 'report') { this.setState({ screen:'report', form:{...SAMPLE}, generatedAt:this.fmtDate(new Date()), generatedAtDate:new Date() }); }
+    else if (init === 'error') { this.setState({ screen:'error' }); }
+    if (!this.state.generatedAt) this.setState({ generatedAt: this.fmtDate(new Date()) });
+    this._rt = setInterval(()=> this.setState(st=>({ tick: (st.tick||0) + 1 })), 30000);
+  }
+  componentWillUnmount(){
+    clearInterval(this._t); clearTimeout(this._tt); clearTimeout(this._gt); clearInterval(this._rt);
+    window.removeEventListener('resize', this._onResize);
+  }
+
+  T(){ return I18N[this.state.lang] || I18N.ES; }
+  fmtDate(d){
+    const m = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+    const hh = String(d.getHours()).padStart(2,'0');
+    const mm = String(d.getMinutes()).padStart(2,'0');
+    return d.getDate()+' '+m[d.getMonth()]+' '+d.getFullYear()+' · '+hh+':'+mm;
+  }
+  relativeTimeFor(d){
+    if (!d) return '';
+    const T = this.T();
+    const diffSec = Math.floor((Date.now() - d.getTime())/1000);
+    if (diffSec < 60) return T.justNow;
+    const minutes = Math.floor(diffSec/60);
+    if (minutes < 60) return T.minAgo.replace('{n}', minutes);
+    const hours = Math.floor(minutes/60);
+    return T.hourAgo.replace('{n}', hours);
+  }
+  loadPersisted(){
+    try{
+      const f = localStorage.getItem(FORM_KEY);
+      const l = localStorage.getItem(LANG_KEY);
+      const d = localStorage.getItem(DENSITY_KEY);
+      const h = localStorage.getItem(HIST_KEY);
+      const c = localStorage.getItem(COACH_KEY);
+      const upd = {};
+      if (f) upd.form = JSON.parse(f);
+      if (l) upd.lang = l;
+      if (d) upd.density = d;
+      if (h) upd.history = JSON.parse(h);
+      if (!c) upd.showCoachmark = true;
+      if (Object.keys(upd).length) this.setState(upd);
+    }catch(e){}
+  }
+  persistForm(form){ try{ localStorage.setItem(FORM_KEY, JSON.stringify(form)); }catch(e){} }
+  setLang(l){ this.setState({ lang:l }); try{ localStorage.setItem(LANG_KEY, l); }catch(e){} }
+  toggleDensity(){ this.setState(st=>{ const d = st.density==='comfortable' ? 'compact' : 'comfortable'; try{ localStorage.setItem(DENSITY_KEY, d); }catch(e){} return { density:d }; }); }
+  dismissCoachmark(){ this.setState({ showCoachmark:false }); try{ localStorage.setItem(COACH_KEY,'1'); }catch(e){} }
+  toggleHistory(){ this.setState(st=>({ showHistory: !st.showHistory })); }
+  openHistoryEntry(entry){
+    const d = new Date(entry.dateISO);
+    this.setState({ screen:'report', storeNameOverride: entry.storeName, generatedAtDate: d, generatedAt: this.fmtDate(d), showHistory:false, form:{...SAMPLE} });
+  }
+
+  toast(msg){ this.setState({ toast:{ msg } }); clearTimeout(this._tt); this._tt = setTimeout(()=> this.setState({ toast:null }), 2600); }
+  loadSample(){ this.setState({ form:{...SAMPLE}, expanded:{ campanas:true, productos:true, clientes:true, seo:true }, emptyWarning:false }); this.persistForm(SAMPLE); this.toast(this.T().toastSample); }
+
+  onFieldChange(key, e){
+    const val = e.target.value;
+    const form = { ...this.state.form, [key]: val };
+    this.persistForm(form);
+    this.setState({ form, emptyWarning:false });
+  }
+  onFieldBlur(key){ this.setState(st=>({ touched:{ ...st.touched, [key]:true } })); }
+
+  generate(){
+    if (this.state.generating) return;
+    const totalFilled = Object.values(this.state.form).filter(v=>!!v).length;
+    if (totalFilled === 0){ this.setState({ emptyWarning:true }); return; }
+    this.setState({ generating:true, emptyWarning:false });
+    this._gt = setTimeout(()=>{
+      this.setState({ generating:false, screen:'loading', progress:0, agentStatus:['processing','waiting','waiting','waiting'], loadingMsg: this.T().agentMsgs[0] });
+      this.runLoading();
+    }, 550);
+  }
+  runLoading(){
+    clearInterval(this._t);
+    const speed = this.props.analysisSpeed === 'Rápido' ? 4 : this.props.analysisSpeed === 'Lento' ? 1 : 2;
+    const simulateError = this.props.demoMode === 'Simular error de conexión';
+    this._t = setInterval(()=>{
+      const M = this.T().agentMsgs;
+      const p = Math.min(100, this.state.progress + speed);
+      if (simulateError && p >= 46){
+        clearInterval(this._t);
+        this.setState({ screen:'error' });
+        return;
+      }
+      const st = [...this.state.agentStatus];
+      let msg = this.state.loadingMsg;
+      if (p >= 25) st[0] = 'done';
+      if (p >= 22 && p < 50) { if (st[1] !== 'done') st[1] = 'processing'; msg = M[1]; }
+      if (p >= 50) st[1] = 'done';
+      if (p >= 47 && p < 75) { if (st[2] !== 'done') st[2] = 'processing'; msg = M[2]; }
+      if (p >= 75) st[2] = 'done';
+      if (p >= 72 && p < 100) { if (st[3] !== 'done') st[3] = 'processing'; msg = M[3]; }
+      if (p >= 100) { st[0]='done'; st[1]='done'; st[2]='done'; st[3]='done'; msg = this.T().compiling; }
+      this.setState({ progress:p, agentStatus:st, loadingMsg:msg });
+      if (p >= 100){
+        clearInterval(this._t);
+        this._gt = setTimeout(()=>{ if (this.state.screen === 'loading') this.finishReport(); }, 850);
+      }
+    }, 70);
+  }
+  computeHealthScore(){
+    const map = { urgent:40, attention:65, ok:90, optimize:70 };
+    const total = RESULT_LEVELS.reduce((sum,lv)=> sum + map[lv], 0);
+    return Math.round(total / RESULT_LEVELS.length);
+  }
+  finishReport(){
+    const now = new Date();
+    const healthScore = this.computeHealthScore();
+    const entry = { id: now.getTime(), storeName: this.props.storeName || 'TiendaNova', dateISO: now.toISOString(), healthScore };
+    const history = [entry].concat(this.state.history).slice(0,5);
+    try{ localStorage.setItem(HIST_KEY, JSON.stringify(history)); }catch(e){}
+    this.setState({ screen:'report', generatedAt:this.fmtDate(now), generatedAtDate:now, history, actionsApplied:[false,false,false], expandedResults:[false,false,false,false], storeNameOverride:null });
+  }
+  retryFromError(){
+    this.setState({ screen:'loading', progress:0, agentStatus:['processing','waiting','waiting','waiting'], loadingMsg:this.T().agentMsgs[0] });
+    this.runLoading();
+  }
+  cancel(){ clearInterval(this._t); clearTimeout(this._gt); this.setState({ screen:'input' }); this.toast(this.T().toastCancel); }
+  newAnalysis(){ this.setState({ screen:'input', storeNameOverride:null }); }
+  downloadPDF(){ this.toast(this.T().toastPdf); }
+  back(){
+    if (this.state.screen === 'report' || this.state.screen === 'error') this.setState({ screen:'input' });
+    else if (this.state.screen === 'loading') this.cancel();
+  }
+  applyAction(i){ this.setState(st=>{ const arr=[...st.actionsApplied]; arr[i]=true; return { actionsApplied:arr }; }); this.toast(this.T().applied); }
+  toggleResultExpand(i){ this.setState(st=>{ const arr=[...st.expandedResults]; arr[i]=!arr[i]; return { expandedResults:arr }; }); }
+
+  buildSummaryText(){
+    const T = this.T();
+    const prio = PRIO_LABEL[this.state.lang] || PRIO_LABEL.ES;
+    const lines = [];
+    lines.push((this.state.storeNameOverride || this.props.storeName || 'TiendaNova') + ' — ' + T.analysisComplete);
+    lines.push('');
+    lines.push(T.priorityTitle + ':');
+    T.actions.forEach((a,i)=> lines.push('- [' + prio[ACTION_LEVELS[i]] + '] ' + a.text + ' — ' + a.metric));
+    lines.push('');
+    T.results.forEach((r,i)=> lines.push(T.agentNames[i] + ' (' + prio[RESULT_LEVELS[i]] + '): ' + r.rec));
+    return lines.join('\n');
+  }
+  copySummary(){
+    const text = this.buildSummaryText();
+    const done = ()=> this.toast(this.T().copied);
+    try{
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done).catch(done);
+      else done();
+    }catch(e){ done(); }
+  }
+
+  renderVals(){
+    const s = this.state;
+    const T = this.T();
+    const w = s.width;
+    const prio = PRIO_LABEL[s.lang] || PRIO_LABEL.ES;
+    const compact = s.density === 'compact';
+
+    const pillBase = { border:'none', cursor:'pointer', fontSize:'12px', fontWeight:'600', padding:'6px 11px', borderRadius:'7px', fontFamily:'inherit', transition:'all .15s' };
+    const langs = ['ES','EN','PT'].map(l => ({
+      label:l, onClick:()=> this.setLang(l), pressedStr: l===s.lang ? 'true' : 'false',
+      style: l === s.lang ? {...pillBase, background:'#2563EB', color:'#fff', boxShadow:'0 0 12px rgba(37,99,235,.5)'} : {...pillBase, background:'transparent', color:'#94A3B8'},
+    }));
+
+    const stepIndex = s.screen === 'input' ? 0 : s.screen === 'loading' ? 1 : 2;
+    const crumbs = T.crumbs.map((c,i)=>({
+      label:c, notFirst:i>0,
+      style:{ color: i===stepIndex ? '#fff' : i<stepIndex ? '#22C55E' : '#475569', fontWeight: i===stepIndex ? '600' : '500', fontSize:'13px' },
+    }));
+
+    const fieldsContainerStyle = { padding: compact ? '2px 14px 12px' : '2px 18px 20px', display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))', gap: compact ? '10px' : '14px' };
+
+    const inputCards = CARD_ORDER.map(id=>{
+      const cdef = T.cards[id];
+      const keys = FIELD_KEYS[id];
+      const types = FIELD_TYPES[id];
+      const fields = cdef.fields.map((fc,i)=>{
+        const key = keys[i];
+        const type = types[i];
+        const v = s.form[key] || '';
+        const errKey = validateValue(type, v);
+        const touched = !!s.touched[key];
+        const valid = !!v && !errKey;
+        const showError = touched && !!v && !!errKey;
+        return {
+          label:fc.label, ph:fc.ph, tooltip:fc.tip || '', value:v, valid, showError,
+          ariaInvalid: showError ? 'true' : 'false',
+          errorMsg: errKey ? T[errKey] : '',
+          inputStyle: { width:'100%', padding:'10px 30px 10px 12px', background:'rgba(7,7,12,.6)', border:'1px solid ' + (showError ? 'rgba(239,68,68,.6)' : valid ? 'rgba(34,197,94,.4)' : 'rgba(255,255,255,.1)'), borderRadius:'10px', color:'#fff', fontSize:'14px', fontFamily:'inherit', outline:'none', transition:'border-color .15s, box-shadow .15s' },
+          onChange:(e)=> this.onFieldChange(key, e),
+          onBlur:()=> this.onFieldBlur(key),
+        };
+      });
+      const filled = fields.filter(f=>f.valid || (s.form[keys[fields.indexOf(f)]])).filter(f=>!!f.value).length;
+      const filledCount = fields.filter(f=>!!f.value).length;
+      const complete = filledCount === fields.length;
+      const expanded = !!s.expanded[id];
+      return {
+        icon:CARD_ICONS[id], title:cdef.title, desc:cdef.desc, fields, chevron: expanded ? '▲' : '▼',
+        expandedStr: expanded ? 'true' : 'false',
+        status: complete ? T.statusComplete : (filledCount>0 ? filledCount+'/'+fields.length : T.statusPending),
+        iconBoxStyle:{ width:'42px', height:'42px', borderRadius:'12px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'20px', flexShrink:0, transition:'background .2s, box-shadow .2s', background: expanded ? 'rgba(37,99,235,.2)' : 'rgba(255,255,255,.05)', boxShadow: expanded ? '0 0 18px rgba(37,99,235,.35)' : 'none' },
+        statusStyle:{ fontSize:'12px', fontWeight:'600', padding:'4px 10px', borderRadius:'99px', whiteSpace:'nowrap', color: complete ? '#22C55E' : '#94A3B8', background: complete ? 'rgba(34,197,94,.12)' : 'rgba(148,163,184,.1)' },
+        bodyStyle:{ overflow:'hidden', transition:'max-height .35s ease, opacity .25s ease', maxHeight: expanded ? '900px' : '0px', opacity: expanded ? '1' : '0' },
+        fieldsContainerStyle,
+        onToggle:()=> this.setState(st=>({ expanded:{...st.expanded, [id]: !st.expanded[id]} })),
+      };
+    });
+
+    const stTxt = { done:T.statusDone, processing:T.statusProcessing, waiting:T.statusWaiting };
+    const agents = s.agentStatus.map((st,i)=>({
+      name:T.agentNames[i], sub:T.agentSubs[i], processing: st==='processing',
+      icon: st==='done' ? '✓' : st==='processing' ? '⟳' : '○',
+      statusText: stTxt[st],
+      iconStyle:{ fontSize:'17px', display:'inline-block', color: st==='done' ? '#22C55E' : st==='processing' ? '#5b8cff' : '#475569', animation: st==='processing' ? 'spin 1s linear infinite' : 'none' },
+      statusStyle:{ fontSize:'12px', fontWeight:'500', color: st==='done' ? '#22C55E' : st==='processing' ? '#5b8cff' : '#64748b' },
+      cardStyle:{ background: st==='done' ? 'rgba(34,197,94,.06)' : st==='processing' ? 'rgba(37,99,235,.1)' : 'rgba(255,255,255,.02)', border:'1px solid '+(st==='processing' ? 'rgba(37,99,235,.4)' : st==='done' ? 'rgba(34,197,94,.25)' : 'rgba(255,255,255,.06)'), borderRadius:'14px', padding:'16px', display:'flex', flexDirection:'column', gap:'8px', alignItems:'flex-start', backdropFilter:'blur(8px)', boxShadow: st==='processing' ? '0 0 26px rgba(37,99,235,.28)' : 'none', transition:'all .3s' },
+    }));
+
+    const priorityItemPad = compact ? '9px 12px' : '13px 15px';
+    const priorityActions = T.actions.map((a,i)=>{
+      const lv = LEVELS[ACTION_LEVELS[i]];
+      const applied = s.actionsApplied[i];
+      return { text:a.text, metric:a.metric, prio: prio[ACTION_LEVELS[i]], icon:ACTION_ICONS[i],
+        iconStyle:{ width:'40px', height:'40px', borderRadius:'11px', background:lv.bg, display:'flex', alignItems:'center', justifyContent:'center', fontSize:'18px', flexShrink:0 },
+        badgeStyle:{ fontSize:'11.5px', fontWeight:'700', padding:'5px 11px', borderRadius:'99px', whiteSpace:'nowrap', color:lv.c, background:lv.bg },
+        itemStyle:{ display:'flex', alignItems:'center', gap:'14px', padding:priorityItemPad, background:'rgba(7,7,12,.5)', border:'1px solid rgba(255,255,255,.06)', borderRadius:'12px', transition:'border-color .15s' },
+        applyLabel: applied ? T.applied : T.applyAction,
+        applyStyle: applied
+          ? { background:'rgba(34,197,94,.15)', color:'#22C55E', border:'1px solid rgba(34,197,94,.4)', borderRadius:'9px', padding:'7px 13px', fontSize:'12px', fontWeight:'700', whiteSpace:'nowrap', cursor:'default', pointerEvents:'none', fontFamily:'inherit' }
+          : { background:'rgba(37,99,235,.14)', color:'#93b4ff', border:'1px solid rgba(37,99,235,.4)', borderRadius:'9px', padding:'7px 13px', fontSize:'12px', fontWeight:'700', whiteSpace:'nowrap', cursor:'pointer', fontFamily:'inherit' },
+        onApply: ()=> this.applyAction(i),
+      };
+    });
+
+    const resultCardPad = compact ? '16px' : '22px';
+    const resultGap = compact ? '10px' : '16px';
+    const agentResults = T.results.map((r,i)=>{
+      const lv = LEVELS[RESULT_LEVELS[i]];
+      const expanded = !!s.expandedResults[i];
+      return { name:T.agentNames[i], icon:RESULT_ICONS[i], prio: prio[RESULT_LEVELS[i]], rec:r.rec, detail:r.detail,
+        expanded, expandedStr: expanded ? 'true' : 'false', expandLabel: expanded ? T.viewLess : T.viewFull,
+        onToggleExpand: ()=> this.toggleResultExpand(i),
+        metrics: r.labels.map((lab,k)=>({ value:METRIC_VALUES[i][k], label:lab, delta:r.deltas[k], deltaStyle:{ color:METRIC_DC[i][k], fontSize:'11px', fontWeight:'500', marginTop:'2px' }, sparkPoints: sparkPoints(SPARK_DATA[i][k], 88, 26), sparkColor: METRIC_DC[i][k] })),
+        findings: r.findings,
+        rootStyle:{ background:'rgba(18,20,34,.55)', backdropFilter:'blur(12px)', border:'1px solid rgba(255,255,255,.08)', borderTop:'3px solid '+lv.c, borderRadius:'18px', padding:resultCardPad, display:'flex', flexDirection:'column', gap:resultGap, boxShadow:'0 0 30px '+lv.bg, animation:'fadeSlideIn .5s ease both', animationDelay:(i*0.08)+'s' },
+        iconBoxStyle:{ width:'40px', height:'40px', borderRadius:'11px', background:lv.bg, display:'flex', alignItems:'center', justifyContent:'center', fontSize:'20px' },
+        prioStyle:{ fontSize:'12px', fontWeight:'700', padding:'5px 11px', borderRadius:'99px', color:lv.c, background:lv.bg, letterSpacing:'.02em' },
+        bulletStyle:{ width:'6px', height:'6px', borderRadius:'50%', background:lv.c, marginTop:'6px', flexShrink:0 },
+        recStyle:{ background:'rgba(255,255,255,.03)', borderLeft:'3px solid '+lv.c, borderRadius:'0 10px 10px 0', padding:'13px 15px' } };
+    });
+
+    const healthScore = this.computeHealthScore();
+    const healthColor = healthScore>=75 ? '#22C55E' : healthScore>=50 ? '#F97316' : '#EF4444';
+    const circumference = 2*Math.PI*52;
+    const healthDash = (circumference*healthScore/100).toFixed(1) + ' ' + circumference.toFixed(1);
+    const urgentCount = ACTION_LEVELS.filter(l=>l==='urgent').length;
+    const attentionCount = RESULT_LEVELS.filter(l=>l==='attention').length;
+    const kpiValueBase = { fontFamily:"'Space Grotesk',sans-serif", fontSize:'21px', fontWeight:'700', fontVariantNumeric:'tabular-nums' };
+    const kpis = [
+      { value:'$17.2k', label:T.kpiRecoverable, valueStyle:{...kpiValueBase, color:'#22C55E'} },
+      { value:String(urgentCount), label:T.kpiUrgent, valueStyle:{...kpiValueBase, color:'#EF4444'} },
+      { value:String(attentionCount), label:T.kpiAttention, valueStyle:{...kpiValueBase, color:'#F97316'} },
+    ];
+    const projActualStyle = { width:'40px', height:'64px', background:'rgba(148,163,184,.35)', borderRadius:'8px 8px 0 0' };
+    const projProjectedStyle = { width:'40px', height:'80px', background:'linear-gradient(180deg,#22C55E,#16a34a)', borderRadius:'8px 8px 0 0', boxShadow:'0 0 18px rgba(34,197,94,.5)' };
+
+    const historyList = s.history.map(entry=>{
+      const d = new Date(entry.dateISO);
+      const hc = entry.healthScore>=75 ? '#22C55E' : entry.healthScore>=50 ? '#F97316' : '#EF4444';
+      return { storeName:entry.storeName, relative:this.relativeTimeFor(d), healthScore:entry.healthScore,
+        scoreStyle:{ fontSize:'12px', fontWeight:'700', color:hc, background:hc==='#22C55E'?'rgba(34,197,94,.14)':hc==='#F97316'?'rgba(249,115,22,.14)':'rgba(239,68,68,.14)', padding:'3px 9px', borderRadius:'99px', flexShrink:0 },
+        onClick:()=> this.openHistoryEntry(entry) };
+    });
+
+    return {
+      t: T, chips: T.chips,
+      showTagline: w >= 720, showStatusText: w >= 900,
+      langs, crumbs, canGoBack: s.screen !== 'input', back: ()=> this.back(),
+      isInput: s.screen === 'input', isLoading: s.screen === 'loading', isReport: s.screen === 'report', isError: s.screen === 'error',
+      inputCards,
+      generate: ()=> this.generate(), loadSample: ()=> this.loadSample(),
+      generating: s.generating, notGenerating: !s.generating,
+      emptyWarning: s.emptyWarning,
+      showCoachmark: s.showCoachmark, dismissCoachmark: ()=> this.dismissCoachmark(),
+      agents, progress: s.progress, progressPct: s.progress + '%',
+      progressFillStyle:{ position:'relative', height:'100%', width:s.progress+'%', background:'repeating-linear-gradient(45deg, #2563EB 0, #2563EB 10px, #60a5fa 10px, #60a5fa 20px)', backgroundSize:'28px 28px', borderRadius:'99px', transition:'width .2s ease', animation:'stripeMove .6s linear infinite, barGlow 1.8s ease-in-out infinite', boxShadow:'0 0 16px rgba(37,99,235,.75)' },
+      loadingMsg: s.loadingMsg, cancel: ()=> this.cancel(),
+      retryFromError: ()=> this.retryFromError(),
+      storeName: s.storeNameOverride || this.props.storeName || 'TiendaNova', generatedAt: s.generatedAt,
+      relativeLabel: this.relativeTimeFor(s.generatedAtDate),
+      downloadPDF: ()=> this.downloadPDF(), newAnalysis: ()=> this.newAnalysis(), copySummary: ()=> this.copySummary(),
+      healthScore, healthColor, healthDash, kpis, projActualStyle, projProjectedStyle,
+      priorityActions, agentResults,
+      toggleHistory: ()=> this.toggleHistory(), showHistory: s.showHistory,
+      hasHistory: s.history.length > 0, noHistory: s.history.length === 0, historyCount: s.history.length, historyList,
+      toggleDensity: ()=> this.toggleDensity(), densityIcon: compact ? '▦' : '▤', densityLabelText: compact ? T.densityCompact : T.densityComfortable,
+      toast: s.toast, toastMsg: s.toast ? s.toast.msg : '',
+    };
+  }
+}
+</script>
+</body>
+</html>

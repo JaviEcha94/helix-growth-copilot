@@ -85,6 +85,16 @@ python main.py --input mi_tienda.json --output reports/junio_2026.md
 
 El sistema corre **end-to-end con un solo comando** y guarda el reporte en `reports/`.
 
+### Interfaz Streamlit
+
+```bash
+streamlit run app.py
+```
+
+Recrea el diseño de `design/design_handoff_streamlit/` conectado al pipeline multi-agente real
+(sin datos de demo): completá el formulario o usá "Cargar datos de ejemplo", generá el reporte
+y mirá a los 4 agentes trabajar en vivo. Requiere las mismas API keys que `main.py` (`.env`).
+
 ---
 
 ## Formato del input
