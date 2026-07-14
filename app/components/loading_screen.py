@@ -60,7 +60,11 @@ def render_loading_screen(on_finished, on_error) -> None:
     # input/reporte — sin esto las tarjetas de agente quedan muy anchas
     # y dispersas.
     st.markdown(
-        '<style>.st-key-loading_wrap{ max-width:780px; margin:0 auto; }</style>',
+        '<style>.st-key-loading_wrap{ max-width:780px; margin:0 auto; }'
+        '.st-key-cancel_btn button{ background:transparent !important; border:none !important; '
+        'color:#94A3B8 !important; text-decoration:underline !important; text-underline-offset:3px !important; }'
+        '.st-key-cancel_btn button:hover{ color:#fff !important; }'
+        "</style>",
         unsafe_allow_html=True,
     )
     with st.container(key="loading_wrap"):
@@ -79,11 +83,19 @@ def render_loading_screen(on_finished, on_error) -> None:
                 status = "waiting"
             icon = "✓" if status == "done" else ("⟳" if status == "processing" else "○")
             status_text = {"done": T["statusDone"], "processing": T["statusProcessing"], "waiting": T["statusWaiting"]}[status]
+            ring = (
+                '<span style="position:absolute;inset:0;border-radius:50%;border:1.5px solid #2563EB;'
+                'animation:ringPulse 1.4s ease-out infinite;"></span>'
+                if status == "processing" else ""
+            )
             with cols[i]:
                 st.markdown(
                     f"""<div class="helix-agent-card {status}">
                         <div style="display:flex;align-items:center;gap:10px;">
-                            <span class="helix-agent-icon {status}">{icon}</span>
+                            <span style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;">
+                                {ring}
+                                <span class="helix-agent-icon {status}">{icon}</span>
+                            </span>
                             <span class="helix-agent-name">{T['agentNames'][i]}</span>
                         </div>
                         <span class="helix-agent-sub">{T['agentSubs'][i]}</span>

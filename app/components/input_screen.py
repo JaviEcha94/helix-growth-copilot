@@ -69,8 +69,7 @@ def _render_card(card_id: str, T: dict) -> None:
             ftype = types[i]
             with cols[i % 2]:
                 value = st.text_input(
-                    field["label"], value=st.session_state["form"].get(key, ""),
-                    placeholder=field["ph"], help=field.get("tip") or None,
+                    field["label"], placeholder=field["ph"], help=field.get("tip") or None,
                     key=f"field_{key}", on_change=_sync_field, args=(key,),
                 )
                 err_key = validate_value(ftype, value)
@@ -87,6 +86,22 @@ def _any_field_filled() -> bool:
 def render_input_screen(on_generate) -> None:
     T = t(st.session_state["lang"])
 
+    st.markdown(
+        """<style>
+        .st-key-generate_btn button{
+          background:linear-gradient(110deg,#2563EB,#00D4AA 45%,#2563EB) !important; background-size:220% 100% !important;
+          animation:sheen 5s linear infinite !important; box-shadow:0 8px 34px rgba(37,99,235,.55) !important; border:none !important;
+        }
+        .st-key-load_sample_btn button{
+          background:transparent !important; border:none !important; color:#5b8cff !important; font-weight:600 !important;
+        }
+        .st-key-load_sample_btn button:hover{ text-decoration:underline !important; }
+        .st-key-dismiss_coachmark button{
+          background:rgba(7,7,12,.2) !important; border:none !important; color:#07070C !important; font-size:11.5px !important;
+        }
+        </style>""",
+        unsafe_allow_html=True,
+    )
     st.markdown(f'<div class="helix-eyebrow">{T["eyebrow"]}</div>', unsafe_allow_html=True)
     st.markdown(f"<h1 style='font-size:31px;margin:0 0 8px;'>{T['inputTitle']}</h1>", unsafe_allow_html=True)
     st.markdown(f"<p style='color:#94A3B8;font-size:14.5px;max-width:660px;'>{T['inputSub']}</p>", unsafe_allow_html=True)
@@ -96,13 +111,11 @@ def render_input_screen(on_generate) -> None:
     c1, c2 = st.columns(2)
     with c1:
         st.session_state["store_name"] = st.text_input(
-            T["storeNameLabel"], value=st.session_state.get("store_name", ""),
-            placeholder="TiendaNova", key="field_store_name",
+            T["storeNameLabel"], placeholder="TiendaNova", key="field_store_name",
         )
     with c2:
         st.session_state["period"] = st.text_input(
-            T["periodLabel"], value=st.session_state.get("period", ""),
-            placeholder="Julio 2026", key="field_period",
+            T["periodLabel"], placeholder="Julio 2026", key="field_period",
         )
 
     st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
@@ -130,17 +143,20 @@ def render_input_screen(on_generate) -> None:
             else:
                 on_generate()
 
-    b1, b2, b3 = st.columns([1, 0.15, 1.4])
-    with b1:
-        st.button(T["loadSample"], key="load_sample_btn", on_click=_load_sample, use_container_width=True)
-    with b3:
-        st.caption(T["estimate"])
+    _, sample_mid, _ = st.columns([1, 1.6, 1])
+    with sample_mid:
+        b1, bsep, b3 = st.columns([1.3, 0.25, 1.7])
+        with b1:
+            st.button(T["loadSample"], key="load_sample_btn", on_click=_load_sample, use_container_width=True)
+        with bsep:
+            st.markdown("<div style='text-align:center;color:#334155;padding-top:8px;'>·</div>", unsafe_allow_html=True)
+        with b3:
+            st.markdown(f"<div style='color:#94A3B8;font-size:13px;padding-top:8px;'>{T['estimate']}</div>", unsafe_allow_html=True)
 
     if st.session_state["show_coachmark"]:
-        cm1, cm2 = st.columns([3, 1])
-        with cm1:
+        _, cm_mid, _ = st.columns([1, 1.6, 1])
+        with cm_mid:
             st.markdown(f'<div class="helix-coachmark">{T["coachmarkText"]}</div>', unsafe_allow_html=True)
-        with cm2:
-            st.button(T["coachmarkDismiss"], key="dismiss_coachmark", on_click=_dismiss_coachmark)
+            st.button(T["coachmarkDismiss"], key="dismiss_coachmark", on_click=_dismiss_coachmark, use_container_width=True)
 
     persist()

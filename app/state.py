@@ -70,6 +70,15 @@ def init_session_state() -> None:
         st.session_state["show_coachmark"] = True
     else:
         st.session_state["show_coachmark"] = not st.session_state["coachmark_seen"]
+
+    # Los widgets de texto usan key=f"field_{k}" como única fuente de verdad
+    # (sin pasar también value=, que Streamlit desaconseja combinar con un
+    # key ya presente en session_state). Acá se siembran esas keys una vez
+    # a partir del form/valores persistidos, antes de que se creen los
+    # widgets por primera vez.
+    for key, value in st.session_state["form"].items():
+        st.session_state.setdefault(f"field_{key}", value)
+
     st.session_state["_initialized"] = True
 
 

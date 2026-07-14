@@ -128,6 +128,16 @@ def render_report_screen(on_new_analysis) -> None:
         .st-key-new_analysis_btn button{
           background:transparent !important; color:#5b8cff !important; border:1px solid #2563EB !important;
         }
+        [class*="st-key-apply_"] button{
+          background:rgba(37,99,235,.14) !important; color:#93b4ff !important; border:1px solid rgba(37,99,235,.4) !important;
+        }
+        [class*="st-key-applied_"] button{
+          background:rgba(34,197,94,.15) !important; color:#22C55E !important; border:1px solid rgba(34,197,94,.4) !important;
+        }
+        [class*="st-key-expand_result_"] button{
+          background:transparent !important; border:1px solid rgba(255,255,255,.14) !important; color:#93b4ff !important;
+        }
+        [class*="st-key-expand_result_"] button:hover{ border-color:rgba(37,99,235,.55) !important; background:rgba(37,99,235,.08) !important; }
         </style>""",
         unsafe_allow_html=True,
     )
