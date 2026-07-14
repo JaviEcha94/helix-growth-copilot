@@ -35,7 +35,7 @@ def _relative_time(iso: str | None, T: dict) -> str:
 def render_header() -> None:
     T = t(st.session_state["lang"])
 
-    left, right = st.columns([3, 4], vertical_alignment="center")
+    left, right = st.columns([2, 5], vertical_alignment="center")
     with left:
         st.markdown(
             f"""
@@ -52,7 +52,7 @@ def render_header() -> None:
             unsafe_allow_html=True,
         )
     with right:
-        c1, c2, c3 = st.columns([1.5, 1.3, 1.3])
+        c1, c2, c3, c4 = st.columns([1.1, 1.2, 1.2, 1.6])
         with c1:
             st.markdown(
                 f'<div class="helix-status-dot" style="margin-top:6px;"><span></span>{T["statusOnline"]}</div>',
@@ -86,9 +86,7 @@ def render_header() -> None:
             icon = "▦" if st.session_state["density"] == "compact" else "▤"
             label = T["densityCompact"] if st.session_state["density"] == "compact" else T["densityComfortable"]
             st.button(f"{icon} {label}", key="density_toggle", on_click=_toggle_density, use_container_width=True)
-
-        _, lang_col = st.columns([2.3, 1.7])
-        with lang_col:
+        with c4:
             chosen = st.segmented_control(
                 "lang", options=("ES", "EN", "PT"), default=st.session_state["lang"],
                 key="lang_switch", label_visibility="collapsed",

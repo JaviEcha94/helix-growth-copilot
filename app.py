@@ -6,6 +6,7 @@ multi-agente real (src/graph/graph.py) en vez de datos de demo.
 
 Uso: streamlit run app.py
 """
+import time
 from datetime import datetime
 
 import streamlit as st
@@ -43,6 +44,7 @@ def _start_analysis(input_state: dict, extra: dict) -> None:
     st.session_state["last_input_state"] = input_state
     st.session_state["last_extra"] = extra
     st.session_state["job"] = start_job(run_id, input_state)
+    st.session_state["job_started_at"] = time.time()
     st.session_state["screen"] = "loading"
 
 

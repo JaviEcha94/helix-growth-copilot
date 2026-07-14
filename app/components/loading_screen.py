@@ -5,6 +5,16 @@ import streamlit as st
 from app.background import progress_percent
 from app.i18n import t
 
+# Groq/Cerebras a veces responden en menos de un segundo: sin este piso, todo
+# el pipeline (4 agentes + supervisor) puede terminar antes de que la UI
+# alcance a pintar un solo frame de "Analizando...", y el usuario ve saltar
+# directo del formulario al reporte. Estas constantes fuerzan una duración
+# mínima visible, revelando cada etapa de a una aunque el trabajo real ya
+# haya terminado (nunca al revés: si el trabajo real tarda más, se muestra
+# el progreso real sin demora extra).
+_MIN_LOADING_SECONDS = 4.0
+_STAGE_SECONDS = _MIN_LOADING_SECONDS / 5  # 4 agentes + compilación del supervisor
+
 
 def _cancel(job) -> None:
     job.cancel()
@@ -30,8 +40,12 @@ def render_loading_screen(on_finished, on_error) -> None:
         st.rerun()
         return
 
+    elapsed = time.time() - st.session_state.get("job_started_at", time.time())
+    reveal_count = min(5, int(elapsed // _STAGE_SECONDS) + 1)
+    done_agents = [real and (i < min(reveal_count, 4)) for i, real in enumerate(snap["agent_done"])]
+    supervisor_revealed = snap["supervisor_done"] and reveal_count >= 5
+    snap = {**snap, "agent_done": done_agents, "supervisor_done": supervisor_revealed}
     pct = progress_percent(snap)
-    done_agents = snap["agent_done"]
 
     if any(done_agents) and not all(done_agents):
         active_idx = done_agents.index(False)
@@ -86,7 +100,7 @@ def render_loading_screen(on_finished, on_error) -> None:
     with ccol:
         st.button(T["cancel"], key="cancel_btn", on_click=_cancel, args=(job,), use_container_width=True)
 
-    if snap["finished"] and not snap["error"]:
+    if snap["finished"] and not snap["error"] and reveal_count >= 5:
         on_finished(snap["result"])
         st.rerun()
         return

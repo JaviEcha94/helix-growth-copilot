@@ -119,6 +119,18 @@ def render_report_screen(on_new_analysis) -> None:
     relative = _relative_time(st.session_state.get("generated_at_iso"), T)
 
     st.markdown(
+        """<style>
+        .st-key-pdf_gen_btn button, .st-key-pdf_download_btn button{
+          background:#F97316 !important; color:#fff !important; border:none !important;
+        }
+        .st-key-pdf_gen_btn button:hover, .st-key-pdf_download_btn button:hover{ background:#ea6a0c !important; }
+        .st-key-new_analysis_btn button{
+          background:transparent !important; color:#5b8cff !important; border:1px solid #2563EB !important;
+        }
+        </style>""",
+        unsafe_allow_html=True,
+    )
+    st.markdown(
         f"""<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
             <h2 style="font-size:25px;margin:0;">{rd['store_name']}</h2>
             <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;
