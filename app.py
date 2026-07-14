@@ -26,6 +26,7 @@ from app.components.loading_screen import render_loading_screen
 from app.components.report_screen import render_report_screen
 from app.insights import build_report_data
 from app.mapping import form_to_helix_state
+from app.pdf import generate_pdf_bytes
 from app.state import init_session_state, persist
 from app.styles import COMPACT_CSS, CSS
 
@@ -68,8 +69,10 @@ def on_job_finished(accumulated_result: dict) -> None:
     st.session_state["generated_at_iso"] = now.isoformat()
     st.session_state["actions_applied"] = [False, False, False]
     st.session_state["expanded_results"] = [False, False, False, False]
-    st.session_state["pdf_bytes"] = None
     st.session_state["job"] = None
+
+    pdf_result = generate_pdf_bytes(report_data)
+    st.session_state["pdf_bytes"], st.session_state["pdf_name"] = pdf_result or (None, None)
 
     history_entry = {
         "id": int(now.timestamp() * 1000),

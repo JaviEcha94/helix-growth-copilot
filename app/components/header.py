@@ -83,9 +83,18 @@ def _render_header_row(T: dict) -> None:
                     b1, b2 = st.columns([3, 1])
                     with b1:
                         if st.button(entry["store_name"], key=f"hist_{entry['id']}", use_container_width=True):
+                            from datetime import datetime
+
+                            from app.pdf import generate_pdf_bytes
+
                             st.session_state["screen"] = "report"
                             st.session_state["report_data"] = entry["report_data"]
                             st.session_state["generated_at_iso"] = entry["date_iso"]
+                            st.session_state["generated_at"] = datetime.fromisoformat(entry["date_iso"]).strftime("%d/%m/%Y · %H:%M")
+                            st.session_state["actions_applied"] = [False, False, False]
+                            st.session_state["expanded_results"] = [False, False, False, False]
+                            pdf_result = generate_pdf_bytes(entry["report_data"])
+                            st.session_state["pdf_bytes"], st.session_state["pdf_name"] = pdf_result or (None, None)
                             st.session_state["show_history"] = False
                             st.rerun()
                         st.caption(_relative_time(entry["date_iso"], T))
