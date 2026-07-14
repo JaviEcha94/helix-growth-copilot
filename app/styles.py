@@ -25,6 +25,7 @@ CSS = """
 @keyframes blobFloat{0%,100%{transform:translate(0,0)}50%{transform:translate(0,30px)}}
 @keyframes titleGlow{0%,100%{text-shadow:0 0 18px rgba(37,99,235,.45)}50%{text-shadow:0 0 30px rgba(37,99,235,.8)}}
 @keyframes stripeMove{from{background-position:0 0}to{background-position:28px 0}}
+@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:600px 0}}
 
 html, body, [class*="css"]{ font-family:'Inter',system-ui,-apple-system,sans-serif; }
 .stApp{
@@ -138,6 +139,9 @@ code, .mono{ font-family:'JetBrains Mono',monospace !important; }
 .helix-loading-title{ font-family:'Space Grotesk',sans-serif; font-size:25px; font-weight:700; text-align:center; animation:titleGlow 3s ease-in-out infinite; }
 .helix-loading-msg{ text-align:center; color:var(--blue); font-size:14.5px; font-weight:500; min-height:20px; }
 .helix-loading-sub{ text-align:center; color:#64748b; font-size:12.5px; font-family:'JetBrains Mono',monospace; }
+
+.helix-skeleton{ background:linear-gradient(90deg,#15172a 25%,#2a2d4a 50%,#15172a 75%); background-size:800px 100%; animation:shimmer 1.4s infinite; border-radius:7px; }
+.helix-card-plain{ background:var(--surface); backdrop-filter:blur(12px); border:1px solid var(--border); border-radius:18px; padding:22px; }
 
 .helix-error-icon{ width:72px; height:72px; border-radius:20px; background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.4); display:flex; align-items:center; justify-content:center; font-size:32px; margin:0 auto 20px; box-shadow:0 0 30px rgba(239,68,68,.2); }
 
