@@ -152,6 +152,12 @@ div[data-testid="stTextInput"] input:focus{ border-color:var(--blue) !important;
 .stButton>button{ border-radius:11px !important; font-family:'Space Grotesk',sans-serif !important; font-weight:600 !important; }
 .stButton>button:focus-visible{ outline:2px solid #93b4ff !important; }
 
+/* Las tarjetas de input del mockup son compactas: el gap por defecto de
+   Streamlit entre widgets (16px) sumado a la línea de validación aparte
+   hacía que cada campo se viera muy separado del siguiente. */
+div[data-testid="stExpanderDetails"] [data-testid="stVerticalBlock"]{ gap:0.3rem !important; }
+div[data-testid="stExpanderDetails"] [data-testid="stMarkdownContainer"] p{ margin:0 !important; }
+
 .helix-coachmark{
   background:linear-gradient(135deg,#2563EB,#00D4AA); color:#07070C; padding:10px 14px; border-radius:12px;
   font-size:12.5px; font-weight:600; box-shadow:0 12px 34px rgba(37,99,235,.5); text-align:center; margin-top:8px;
