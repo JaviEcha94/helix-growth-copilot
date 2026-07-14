@@ -51,7 +51,18 @@ def _render_card(card_id: str, T: dict) -> None:
     status_text, _complete = _card_status(card_id, T)
 
     label = f"{CARD_ICONS[card_id]}  **{cdef['title']}** — {cdef['desc']}   `{status_text}`"
-    with st.expander(label, expanded=st.session_state["expanded"].get(card_id, False)):
+    st.markdown(
+        f'<style>.st-key-card_{card_id}{{'
+        'background:var(--surface) !important; backdrop-filter:blur(12px); border:1px solid var(--border) !important;'
+        'border-radius:18px !important; box-shadow:inset 0 1px 0 rgba(255,255,255,.06), 0 0 20px rgba(37,99,235,.06) !important;'
+        'overflow:hidden;'
+        "}}"
+        f'.st-key-card_{card_id} [data-testid="stExpanderDetails"]{{ border-top:1px solid rgba(255,255,255,.06); }}'
+        f'.st-key-card_{card_id} summary{{ padding:14px 18px !important; }}'
+        "</style>",
+        unsafe_allow_html=True,
+    )
+    with st.expander(label, expanded=st.session_state["expanded"].get(card_id, False), key=f"card_{card_id}"):
         cols = st.columns(2)
         for i, field in enumerate(cdef["fields"]):
             key = keys[i]
