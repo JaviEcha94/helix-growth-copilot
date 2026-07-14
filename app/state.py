@@ -35,6 +35,7 @@ _DEFAULTS = {
     "generated_at_iso": None,
     "report_data": None,
     "job": None,
+    "pdf_cache": {},  # {lang: (bytes, filename)} — el PDF se traduce por idioma bajo demanda
 }
 
 

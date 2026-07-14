@@ -97,14 +97,14 @@ def _toggle_result(i: int) -> None:
 
 
 def _generate_pdf() -> None:
-    from src.utils.pdf_exporter import export_to_pdf
+    from app.pdf import generate_pdf_bytes
 
     rd = st.session_state["report_data"]
-    toast(t(st.session_state["lang"])["toastPdf"])
-    path = export_to_pdf(rd["final_report_md"], store_name=rd["store_name"], period=rd["period"])
-    with open(path, "rb") as f:
-        st.session_state["pdf_bytes"] = f.read()
-    st.session_state["pdf_name"] = path.split("/")[-1].split("\\")[-1]
+    lang = st.session_state["lang"]
+    toast(t(lang)["toastPdf"])
+    result = generate_pdf_bytes(rd, lang)
+    if result:
+        st.session_state["pdf_cache"][lang] = result
 
 
 def render_report_screen(on_new_analysis) -> None:
@@ -147,10 +147,11 @@ def render_report_screen(on_new_analysis) -> None:
     with b1:
         _render_copy_button(_build_summary_text(rd, T), T["copySummary"])
     with b2:
-        if st.session_state.get("pdf_bytes"):
+        cached = st.session_state["pdf_cache"].get(st.session_state["lang"])
+        if cached:
+            pdf_bytes, pdf_name = cached
             st.download_button(
-                f"⬇ {T['downloadPDF']}", data=st.session_state["pdf_bytes"],
-                file_name=st.session_state.get("pdf_name", "reporte.pdf"),
+                f"⬇ {T['downloadPDF']}", data=pdf_bytes, file_name=pdf_name,
                 mime="application/pdf", use_container_width=True, key="pdf_download_btn",
             )
         else:

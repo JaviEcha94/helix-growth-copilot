@@ -7,6 +7,16 @@ from app.state import persist
 def _set_lang(lang: str) -> None:
     st.session_state["lang"] = lang
     persist()
+    # Si ya hay un reporte cargado, se traduce el PDF de una vez para ese
+    # idioma — así el botón "Descargar PDF" sigue siendo un solo click en
+    # vez de caer al botón de "generar" cada vez que se cambia de idioma.
+    report_data = st.session_state.get("report_data")
+    if report_data and lang not in st.session_state.get("pdf_cache", {}):
+        from app.pdf import generate_pdf_bytes
+
+        result = generate_pdf_bytes(report_data, lang)
+        if result:
+            st.session_state["pdf_cache"][lang] = result
 
 
 def _toggle_density() -> None:
@@ -93,8 +103,9 @@ def _render_header_row(T: dict) -> None:
                             st.session_state["generated_at"] = datetime.fromisoformat(entry["date_iso"]).strftime("%d/%m/%Y · %H:%M")
                             st.session_state["actions_applied"] = [False, False, False]
                             st.session_state["expanded_results"] = [False, False, False, False]
-                            pdf_result = generate_pdf_bytes(entry["report_data"])
-                            st.session_state["pdf_bytes"], st.session_state["pdf_name"] = pdf_result or (None, None)
+                            lang = st.session_state["lang"]
+                            pdf_result = generate_pdf_bytes(entry["report_data"], lang)
+                            st.session_state["pdf_cache"] = {lang: pdf_result} if pdf_result else {}
                             st.session_state["show_history"] = False
                             st.rerun()
                         st.caption(_relative_time(entry["date_iso"], T))

@@ -71,8 +71,9 @@ def on_job_finished(accumulated_result: dict) -> None:
     st.session_state["expanded_results"] = [False, False, False, False]
     st.session_state["job"] = None
 
-    pdf_result = generate_pdf_bytes(report_data)
-    st.session_state["pdf_bytes"], st.session_state["pdf_name"] = pdf_result or (None, None)
+    lang = st.session_state["lang"]
+    pdf_result = generate_pdf_bytes(report_data, lang)
+    st.session_state["pdf_cache"] = {lang: pdf_result} if pdf_result else {}
 
     history_entry = {
         "id": int(now.timestamp() * 1000),
@@ -102,7 +103,7 @@ def on_retry() -> None:
 def on_new_analysis() -> None:
     st.session_state["screen"] = "input"
     st.session_state["report_data"] = None
-    st.session_state["pdf_bytes"] = None
+    st.session_state["pdf_cache"] = {}
 
 
 def on_back() -> None:
