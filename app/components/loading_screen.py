@@ -90,17 +90,16 @@ def render_loading_screen(on_finished, on_error) -> None:
             )
             with cols[i]:
                 st.markdown(
-                    f"""<div class="helix-agent-card {status}">
-                        <div style="display:flex;align-items:center;gap:10px;">
-                            <span style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;">
-                                {ring}
-                                <span class="helix-agent-icon {status}">{icon}</span>
-                            </span>
-                            <span class="helix-agent-name">{T['agentNames'][i]}</span>
-                        </div>
-                        <span class="helix-agent-sub">{T['agentSubs'][i]}</span>
-                        <span class="helix-agent-status {status}">{status_text}</span>
-                    </div>""",
+                    f'<div class="helix-agent-card {status}">'
+                    f'<div style="display:flex;align-items:center;gap:10px;">'
+                    f'<span style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;">'
+                    f'{ring}<span class="helix-agent-icon {status}">{icon}</span>'
+                    f'</span>'
+                    f'<span class="helix-agent-name">{T["agentNames"][i]}</span>'
+                    f'</div>'
+                    f'<span class="helix-agent-sub">{T["agentSubs"][i]}</span>'
+                    f'<span class="helix-agent-status {status}">{status_text}</span>'
+                    f'</div>',
                     unsafe_allow_html=True,
                 )
 
