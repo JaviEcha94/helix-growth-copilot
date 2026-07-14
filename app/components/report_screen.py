@@ -6,7 +6,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 from app.i18n import PRIO_LABEL, t
-from app.insights import severity_color
+from app.insights import friendly_error_message, severity_color
 from app.state import toast
 
 _CIRCUMFERENCE = 2 * math.pi * 52
@@ -297,9 +297,13 @@ def render_report_screen(on_new_analysis) -> None:
                     st.markdown(agent["full_analysis"] or "_Análisis no disponible._")
 
     if rd["errors"]:
-        with st.expander("⚠️ Advertencias del análisis"):
+        with st.expander(f"⚠️ {T['warningsTitle']}"):
+            seen = set()
             for err in rd["errors"]:
-                st.caption(err)
+                friendly = friendly_error_message(err, T)
+                if friendly not in seen:
+                    seen.add(friendly)
+                    st.caption(friendly)
 
     st.markdown(
         f"""<div class="helix-footer">

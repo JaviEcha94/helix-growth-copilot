@@ -30,6 +30,21 @@ def severity_color(level: str) -> tuple[str, str]:
     return _SEVERITY_COLOR.get(level, _SEVERITY_COLOR["ok"])
 
 
+# Los mensajes crudos de src/agents/*.py (ej. "Agente Cliente falló: Error
+# code: 429 - {...rate limit...}") son para logs técnicos / la CLI, no para
+# un cliente final — filtran detalles internos (org id, links de billing,
+# etc). Siempre empiezan con estos prefijos en español, sin importar el
+# idioma de la UI, porque están hardcodeados así en el backend.
+_AGENT_ERROR_PREFIXES = ["Agente Ads", "Agente Producto", "Agente Cliente", "Agente SEO"]
+
+
+def friendly_error_message(raw_error: str, T: dict) -> str:
+    for i, prefix in enumerate(_AGENT_ERROR_PREFIXES):
+        if raw_error.startswith(prefix):
+            return T["errorAgentGeneric"].replace("{agent}", T["agentNames"][i])
+    return T["errorSupervisorGeneric"]
+
+
 def _md_inline_to_html(text: str) -> str:
     text = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
     text = _BOLD_RE.sub(r"<b>\1</b>", text)
