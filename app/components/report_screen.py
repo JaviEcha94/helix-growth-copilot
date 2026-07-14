@@ -34,7 +34,7 @@ def _relative_time(iso: str | None, T: dict) -> str:
     return T["hourAgo"].replace("{n}", str(minutes // 60))
 
 
-def _health_gauge(score: int) -> str:
+def _health_gauge(score: int, label: str) -> str:
     color = "#22C55E" if score >= 75 else "#F97316" if score >= 50 else "#EF4444"
     dash = _CIRCUMFERENCE * score / 100
     return f"""
@@ -46,6 +46,7 @@ def _health_gauge(score: int) -> str:
       </svg>
       <div class="helix-gauge-center">
         <div class="helix-gauge-score">{score}</div>
+        <div class="helix-gauge-label">{label}</div>
       </div>
     </div>
     """
@@ -168,7 +169,7 @@ def render_report_screen(on_new_analysis) -> None:
         st.markdown(f"### 🧭 {T['execTitle']} <span style='font-size:12px;color:#94A3B8;font-weight:400;'>{T['execSub']}</span>", unsafe_allow_html=True)
         gcol, kcol = st.columns([1, 3])
         with gcol:
-            st.markdown(_health_gauge(rd["health_score"]) + f'<div class="helix-gauge-label" style="margin-top:-58px;">{T["healthLabel"]}</div>', unsafe_allow_html=True)
+            st.markdown(_health_gauge(rd["health_score"], T["healthLabel"]), unsafe_allow_html=True)
         with kcol:
             kpis = rd["kpis"]
             k1, k2, k3 = st.columns(3)
