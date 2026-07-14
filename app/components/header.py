@@ -35,7 +35,19 @@ def _relative_time(iso: str | None, T: dict) -> str:
 def render_header() -> None:
     T = t(st.session_state["lang"])
 
-    left, right = st.columns([2, 5], vertical_alignment="center")
+    st.markdown(
+        '<style>.st-key-app_header [data-testid="stVerticalBlock"]{ gap:0.35rem !important; }'
+        '.st-key-app_header [data-testid="stHorizontalBlock"]{ align-items:center !important; }</style>',
+        unsafe_allow_html=True,
+    )
+    with st.container(key="app_header"):
+        _render_header_row(T)
+
+    st.markdown("<div style='height:6px'></div>", unsafe_allow_html=True)
+
+
+def _render_header_row(T: dict) -> None:
+    left, right = st.columns([2, 5], vertical_alignment="center", gap="small")
     with left:
         st.markdown(
             f"""
@@ -52,7 +64,7 @@ def render_header() -> None:
             unsafe_allow_html=True,
         )
     with right:
-        c1, c2, c3, c4 = st.columns([1.1, 1.2, 1.2, 1.6])
+        c1, c2, c3, c4 = st.columns([1.1, 1.2, 1.2, 1.6], vertical_alignment="center", gap="small")
         with c1:
             st.markdown(
                 f'<div class="helix-status-dot" style="margin-top:6px;"><span></span>{T["statusOnline"]}</div>',
@@ -94,8 +106,6 @@ def render_header() -> None:
             if chosen and chosen != st.session_state["lang"]:
                 _set_lang(chosen)
                 st.rerun()
-
-    st.markdown("<div style='height:6px'></div>", unsafe_allow_html=True)
 
 
 def render_breadcrumb_and_back(on_back) -> None:
