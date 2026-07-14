@@ -16,12 +16,13 @@ _STATE_FILE = _STATE_DIR / "helix_ui_state.json"
 
 _PERSISTED_KEYS = ["form", "lang", "density", "history", "coachmark_seen"]
 
+_CARD_EXPANDED_DEFAULTS = {"campanas": True, "productos": False, "clientes": False, "seo": False}
+
 _DEFAULTS = {
     "screen": "input",
     "lang": "ES",
     "form": {},
     "touched": {},
-    "expanded": {"campanas": True, "productos": False, "clientes": False, "seo": False},
     "density": "comfortable",
     "history": [],
     "coachmark_seen": False,
@@ -78,6 +79,11 @@ def init_session_state() -> None:
     # widgets por primera vez.
     for key, value in st.session_state["form"].items():
         st.session_state.setdefault(f"field_{key}", value)
+
+    # Mismo motivo: st.expander(key=...) gestiona su estado abierto/cerrado
+    # vía session_state[key] — se siembra acá en vez de pasar expanded=.
+    for card_id, is_expanded in _CARD_EXPANDED_DEFAULTS.items():
+        st.session_state.setdefault(f"card_{card_id}", is_expanded)
 
     st.session_state["_initialized"] = True
 

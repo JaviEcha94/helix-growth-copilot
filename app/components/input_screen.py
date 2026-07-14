@@ -9,7 +9,8 @@ def _load_sample() -> None:
     for key, value in SAMPLE.items():
         st.session_state["form"][key] = value
         st.session_state[f"field_{key}"] = value
-    st.session_state["expanded"] = {c: True for c in CARD_ORDER}
+    for c in CARD_ORDER:
+        st.session_state[f"card_{c}"] = True
     st.session_state["empty_warning"] = False
     if not st.session_state.get("store_name"):
         st.session_state["store_name"] = "TiendaNova"
@@ -59,10 +60,16 @@ def _render_card(card_id: str, T: dict) -> None:
         "}}"
         f'.st-key-card_{card_id} [data-testid="stExpanderDetails"]{{ border-top:1px solid rgba(255,255,255,.06); }}'
         f'.st-key-card_{card_id} summary{{ padding:14px 18px !important; }}'
+        # Streamlit anima la altura del <details> con un valor en px calculado
+        # por su propio JS; cuando el estado se cambia desde Python (no con
+        # un click real, ej. "Cargar datos de ejemplo") ese cálculo queda
+        # obsoleto y el contenido se ve recortado aunque el ítem ya figure
+        # como abierto. Se fuerza altura automática cuando está abierto.
+        f'.st-key-card_{card_id} details[open]{{ height:auto !important; }}'
         "</style>",
         unsafe_allow_html=True,
     )
-    with st.expander(label, expanded=st.session_state["expanded"].get(card_id, False), key=f"card_{card_id}"):
+    with st.expander(label, key=f"card_{card_id}", on_change="rerun"):
         cols = st.columns(2)
         for i, field in enumerate(cdef["fields"]):
             key = keys[i]
@@ -119,8 +126,10 @@ def render_input_screen(on_generate) -> None:
         )
 
     st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
-    for card_id in CARD_ORDER:
-        _render_card(card_id, T)
+    grid_cols = st.columns(2)
+    for i, card_id in enumerate(CARD_ORDER):
+        with grid_cols[i % 2]:
+            _render_card(card_id, T)
 
     st.markdown("<div style='height:20px'></div>", unsafe_allow_html=True)
 
